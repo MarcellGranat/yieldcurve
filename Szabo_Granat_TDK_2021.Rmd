@@ -21,7 +21,7 @@ header-includes:
 - \pretitle{\begin{center}\LARGE\includegraphics[width=5cm]{logo.png}\\[\bigskipamount]}
 - \posttitle{\end{center}}
 editor_options: 
-  chunk_output_type: console
+  chunk_output_type: inline
 ---
 
 \pagebreak
@@ -96,7 +96,6 @@ knitr::opts_chunk$set(echo = F, comment = "", warning = F, message = F, cache = 
 library(tidyverse)
 library(patchwork)
 load("C:/school/szem_8/TDK-yieldcurve/yieldcurve/dat.RData") 
-load("C:/school/szem_8/TDK-yieldcurve/yieldcurve/dat2.RData") 
 # find the cleaning process in data_cleaning.R
 
 ## Gg theme =============================================================================
@@ -122,6 +121,111 @@ theme_set(theme_bw() + theme(
 ))
 
 ```
+
+
+```{r}
+library(rvest)
+dat_NBER <- read_html(
+  'https://www.nber.org/research/data/us-business-cycle-expansions-and-contractions') %>% 
+  html_table(fill = T) %>% 
+  .[[1]] %>%
+  janitor::clean_names() %>% 
+  tibble() %>% 
+  {
+    df <- .
+    df[-1, ] %>%
+      set_names(as.character(df[1,]))
+  } %>% 
+  janitor::clean_names() %>% 
+  transmute(
+    start = lubridate::ym(paste(peak_year, peak_month)),
+    end = lubridate::ym(paste(trough_year, trough_month))
+  ) %>% 
+  na.omit() %>% 
+  apply(1, function(x) {
+seq.Date(from = lubridate::ymd(x[1]), to = lubridate::ymd(x[2]), by = "month")
+  }) %>% 
+  reduce(c) %>% 
+  {tibble(date = lubridate::ymd(.))}
+
+```
+
+```{r}
+dat_US_yield %>% 
+  pivot_longer(-1) %>% 
+  filter(!str_detect(name, 'D')) %>% 
+  mutate(
+    name = str_remove_all(name, '\\D'),
+    name = paste(name, 'év')
+    ) %>% 
+  ggplot(aes(date, value, color = name)) + 
+  geom_line()
+```
+
+```{r}
+
+dat_US_yield %>% 
+  transmute(
+    date,
+    napi = DGS10 - DGS1,
+    havi = GS10 - GS1
+  ) %>% 
+  pivot_longer(-1) %>% 
+  na.omit() %>% 
+  ggplot(aes(date, value, color = name)) +
+  geom_vline(xintercept = dat_NBER$date, color = 'grey70') + 
+  geom_line() + 
+  scale_color_discrete(direction =-1) +
+  labs(x = NULL, y = 'Szpread', color = NULL)
+
+```
+
+```{r}
+dat_NBER %>% 
+  mutate(recession = T) %>% 
+  merge(dat_US_yield, all.y = T) %>% 
+  mutate(recession = ifelse(is.na(recession), F, T)) %>% 
+  mutate(
+    date = lubridate::yq(paste0(str_sub(as.character(date), end = 4), 'Q', 
+        ((as.numeric(str_sub(as.character(date), start = 6, end = 7)) -1) %/% 3 + 1)))
+  ) %>% 
+  group_by(date) %>% 
+  summarise(recession = sum(recession), GS1 = mean(GS1, na.rm = T), GS10 = mean(GS10, na.rm = T)) %>% 
+  ungroup() %>% 
+  mutate(
+    recession = ifelse(recession > 0, T, F),
+    spread = GS10 - GS1,
+    spread = lag(spread, 4),
+  date_interval = ifelse(date < lubridate::ymd('1995-04-01'), '95 előtt', '95 után')
+  ) %>% 
+  {rbind(., mutate(., date_interval = 'teljes'))} %>% 
+  group_by(date_interval) %>% 
+  group_map(~ .x) %>% 
+  lapply(function(x) {
+  glm(data = x, formula = recession~spread,
+        family = binomial(link = "probit")) %>% 
+  broom::augment(newdata = tibble(spread = c(1.21, 0.76, 0.46, 0.22, 0.02, -0.17,
+                                             -0.5, -0.82, -1.13, -1.46, -1.85, -2.4)),
+                 type.predict = "response") %>% 
+      select(.fitted)
+  }) %>% 
+  reduce(cbind) %>% 
+  set_names('95 előtt', '95 után', 'Teljes időszak') %>% 
+  mutate(
+    Szpread = c(1.21, 0.76, 0.46, 0.22, 0.02, -0.17,
+                                             -0.5, -0.82, -1.13, -1.46, -1.85, -2.4)/100
+  ) %>% 
+  select(Szpread, everything()) %>% 
+  mutate_all(function(x) scales::percent(x, accuracy = .01, decimal.mark = ',')) %>% 
+    knitr::kable(caption = paste0(
+    'Recesszió valószínűsége különböző hozamszpreadek mellett a ',
+    'négy negyedéves késletéssel készített logit modell alapján'
+  ), align = c('c', 'c', 'c', 'c'))
+
+```
+
+
+
 
 
 # Adatok
@@ -191,7 +295,8 @@ dat_plm <- dat_yields %>%
   select(-maturity) %>% 
   pivot_wider(values_from = price, names_from = type) %>% 
   mutate(
-    date = lubridate::yq(paste0(str_sub(as.character(date), end = 4), 'Q', ((as.numeric(str_sub(as.character(date), start = 6, end = 7)) -1) %/% 3 + 1)))
+    date = lubridate::yq(paste0(str_sub(as.character(date), end = 4), 'Q', 
+                                ((as.numeric(str_sub(as.character(date), start = 6, end = 7)) -1) %/% 3 + 1)))
   ) %>% 
   group_by(date, country) %>% 
   summarise_all(.funs = function(x) prod(x)^(1/length(x))) %>% 

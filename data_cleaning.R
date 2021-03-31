@@ -49,7 +49,7 @@ dat_gdp <- read_csv("C:/school/szem_8/TDK-yieldcurve/yieldcurve/namq_10_gdp_1_Da
   select(country, date, values) %>% 
   na.omit() %>% 
   rbind(
-    read_csv("GDPC1.csv") %>% 
+    read_csv("C:/school/szem_8/TDK-yieldcurve/yieldcurve/GDPC1.csv") %>% 
       set_names('date', 'values') %>% 
       transmute(
         country = 'US',
@@ -59,9 +59,9 @@ dat_gdp <- read_csv("C:/school/szem_8/TDK-yieldcurve/yieldcurve/namq_10_gdp_1_Da
   )
 
 dat_US_yield <- read_csv("C:/school/szem_8/TDK-yieldcurve/yieldcurve/GS1.csv") %>% 
-merge(read_csv("C:/school/szem_8/TDK-yieldcurve/yieldcurve/GS10.csv")) %>% 
-merge(read_csv("C:/school/szem_8/TDK-yieldcurve/yieldcurve/DGS1.csv")) %>% 
-merge(read_csv("C:/school/szem_8/TDK-yieldcurve/yieldcurve/DGS10.csv")) %>% 
+merge(read_csv("C:/school/szem_8/TDK-yieldcurve/yieldcurve/GS10.csv"), all = T) %>% 
+merge(read_csv("C:/school/szem_8/TDK-yieldcurve/yieldcurve/DGS1.csv"), all = T) %>% 
+merge(read_csv("C:/school/szem_8/TDK-yieldcurve/yieldcurve/DGS10.csv"), all = T) %>% 
   mutate_at(-1, function(x) as.numeric(x)) %>% 
   mutate(date = lubridate::ymd(DATE)) %>% 
   select(date, everything(), -DATE)
