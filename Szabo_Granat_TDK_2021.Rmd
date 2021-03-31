@@ -1,0 +1,323 @@
+---
+title: "Az európai hozamgörbék recesszió előrejelző képességének empirikus vizsgálata"
+author: "Szabó Dorottya és Granát Marcell"
+date: \today
+output: 
+  pdf_document: 
+    fig_caption: yes
+    toc: yes
+    toc_depth: 4
+header-includes:
+- \usepackage{fancyhdr}
+- \usepackage[hungarian]{babel}
+- \usepackage{natbib}
+- \pagestyle{fancy}
+- \fancyhf{}
+- \fancyhead[RE,LO]{\leftmark}
+- \fancyfoot[C]{\thepage}
+- \usepackage{lscape}
+- \usepackage{pdfpages}
+- \usepackage{titling}
+- \pretitle{\begin{center}\LARGE\includegraphics[width=5cm]{logo.png}\\[\bigskipamount]}
+- \posttitle{\end{center}}
+editor_options: 
+  chunk_output_type: console
+---
+
+\pagebreak
+
+\renewcommand{\abstractname}{Absztrakt}
+
+\begin{abstract}
+
+Számos okból kifolyólag az államkötvények hozamgörbéje a recessziók pontos előrejelzőjének bizonyul az USA-ban. Tanulmányunkban empirikusan vizsgáljuk meg, hogy az európai országok esetében is megfigyelhető-e ez az összefüggés. Az elemzési eszközök körébe tartoznak idősoros- (kointegráció) és panelökonometriai (panel-logit) eszközök. A modellezési eljárás során magyarázóváltozóként kívánjuk felhasználni a különböző kormányzati, társadalmi individualizmust jellemző, illetve az egyes országok eladósodottsági mutatóit. Ezen kiterjesztés célja, hogy a hozamgörbe meredekség előrejelző képességének országonkénti eltérését is vizsgáljuk.
+
+\end{abstract}
+
+\listoftables
+\listoffigures
+
+\pagebreak
+
+# Bevezetés
+
+A hozamgörbék recesszió előrejelző képességét az 1980-as évek végén kezdték el vizsgálni [pl. Keen, 1989; Stevens, 1989] , a ’90-es évek végére pedig komoly szakirodalma lett a témának. Ezek a tanulmányok azt vizsgálják, hogy a különböző lejáratú államkötvények hozamainak különbsége időben hogyan alakul, illetve hogy ez a különbség milyen kapcsolatban áll a reálgazdaság teljesítményével. Az empíria azt mutatja, hogy a gazdasági visszaeséseket a hozamgörbék invertálódása előzi meg, ami azt jelenti, hogy a rövid lejáratú állampapírok hozamai magasabbak, mint a hosszú lejáratú állampapíroké, tehát a hozamszpred negatív tartományba kerül. Ekkor tehát a befektetők a rövid távú befektetéseket kockázatosabbnak ítélik meg, mint a hosszú távú befektetéseket, ami ellent mond az általános gazdasági viselkedésnek. Két tipikus elemzés terjedt el: (1) a GDP növekedési rátájának kvantitatív előrejelzése folytonos modellekkel, (2) a recessziók valószínűségének előrejelzése bináris modellekkel. Estrella és szerzőtársai [2003] azt találják, hogy az utóbbi típusú elemzések jobban teljesítenek. 
+
+Estrella és Fishkin [1996] egy rövid tanulmányukban amellett érvelnek, hogy a hozamszpredek többek között azért is jó indikátorok, mivel a monetáris politikának erős hatása van rá, és így ezen keresztül a reálgazdaságot is képes lehet befolyásolni. Emellett a hozamszpredek tartalmazzák az inflációs és a kamatlábra vonatkozó várakozásokat is, amelynek szintén fontos szerepet tulajdonítanak a szerzők. Ugyanez a szerzőpáros [Estrella & Mishkin, 1998] egy hosszabb tanulmányukban pénzügyi indikátorok, köztük különböző kamatlábak, részvényárak, monetáris aggregátumok és a hozamszpred előrejelző képességét vizsgálták probit modellek segítségével. Azt találták, hogy míg 1-3 negyedéves időhorizonton a részvényárak és a monetáris aggregátumok egyaránt jól jeleznek előre a mintán kívül, addig az ennél távolibb időpontokra való előrejelzésben egyértelműen a hozamszpred emelkedik ki, és jellemzően önmagában, tehát minden más változó bevonása nélkül teljesít jól. Wright [2006] ezzel ellentétes következtetésre jut, tanulmányában megállapítja, hogy a hozamszpredek önmagukban kevésbé jól jeleznek előre recessziót, mint amikor a modell külön változóként a hozamokat is tartalmazza.
+
+Érdekesség azonban, hogy az előbb idézett tanulmány alapján az utóbbi modellek 2006-ban nem jeleztek előre recessziót, míg a hozamszpredek önmagukban igen. Wright a többváltozós modellnek hitt, később kiderült, hogy tévedett. A 2007-2009-es válságot megelőzően a Federal Reserve egy másik elemzője, Haubrich [2005] is arra a végső következtetésre jut cikkében, hogy nem valószínű, hogy a csökkenő hozamszpredek recessziót jeleznek előre. 
+
+A Nagy Recessziót követő időszakban számos további tanulmány született a témában [pl. Rudebusch & Williams, 2009; Chinn & Kucko,  2010], 2017-től pedig ismét laposodott az amerikai hozamgörbe. Bauer és Mertens [2018a] tanulmányukban megállapítják, hogy a hozamszpred kritikus határértéke a 0, tehát egy 0-hoz közeli, de pozitív érték még nem ad okot aggodalomra, viszont a negatív hozamgörbe már vészjósló jelenség. A szerzőpáros amellett érvelt, hogy mivel a pénzügyi válság utáni időszakot amúgy is egy alacsony kamat- és hozamkörnyezet jellemezte, ami történelmi összehasonlításban is különös jelenség, nem vonható le messzemenő következtetés a hozamszpredek alakulása alapján. 
+
+2019 elején már sorra írták meg a különböző sajtóorgánumok is, köztük a Forbes, illetve a Bloomberg, hogy az amerikai hozamgörbe laposodik, és csak idő kérdése, hogy inverz hozamgörbéről beszéljünk, ami pedig egy közelgő recesszió gyanúját keltette a közgazdászokban. 2019 augusztusában az amerikai hosszú és rövid távú állampapírhozamok különbsége negatív értéket vett fel [FRED, 2021], a prognosztizált pénzügyi válság helyett azonban a koronavírus járvány következtében nézhettünk, illetve nézhetünk szembe egy komoly gazdasági visszaeséssel. Ez a jelenség sokféle spekulációnak és konspirációs elméletnek adott teret, és sok emberben felmerült a kérdés, hogy csupán egy véletlen egybeeséssel nézünk-e szembe. 
+
+Chauvet és Potter [2005] tanulmányukban a standard probit modell előrejelző képességét hasonlították össze szofisztikáltabb, kiterjesztett probit modellekével. Az utóbbiak jellemzően hatékonyabban jeleztek előre a mintán kívül, azonban egyedül a standard modell jósolt recessziót 2001 végére a 2001 márciusáig rendelkezésre álló információk alapján. A szerzők amellett érvelnek, hogy ez alapján téves lenne azt a következtetést levonni, miszerint a standard modell jobban teljesít, hiszen a modell rendelkezésére álló információk nem tartalmazták az év szeptember 11-i eseményeit, az Egyesült Államokat ért terrortámadást, ami pedig jelentősen hozzájárult a 2001-es gazdasági visszaeséshez. Nehéz lenne megmondani, hogy ez a kijelentésük magától értetődő-e, ahogy azt is, hogy a 2019-es hozamgörbék előrejelezhették-e egy világméretű egészségügyi járvány gazdasági hatásait, mindenesetre a hozamszpredek kérdése töretlen erővel nyújt ihletet a közgazdászoknak. 
+
+# A narratívák és a bizalom szerepe a recessziók kialakulásában
+
+A piacok működésének, illetve a várakozásoknak az árak és a hozamok alakulásában betöltött szerepének megértése még ma is egy olyan területe a közgazdaságtannak, amelynek számos kérdésére nem sikerült eddig kielégítő választ adni. A piacok bonyolult működését és a piaci szereplők várakozásainak még bonyolultabb összefonódottságát jól példázza John M. Keynes szépségversenyes analógiája [Keynes, 1965]: egy újság versenyt hirdetett, melyben egy fotó alapján az olvasóknak ki kellett választaniuk a 6 legcsinosabb nőt, a versenyt pedig az nyerte, akinek a listája a legközelebb állt az összesített eredményhez. Keynes amellett érvelt, hogy egy ilyen versenyben a megfelelő stratégia az, ha nem a saját preferenciánk szerint értékelünk, hanem azt választjuk, akiről azt gondoljuk, hogy másoknak, a többségnek tetszhet. A sikeres befektetői stratégia is ezt a gondolkodásmódot követelné meg, azonban ezt a stratégiát követni tökéletes racionalitás esetén is enyhén szólva nehézkes, ráadásul a racionalitás feltételezésének megkérdőjelezése is egyre nagyobb hangsúlyt kap a közgazdászok körében.
+
+„Látom, mi a jobb, jól látva helyeslem is; // Elítélem a rosszat, de mégis a rosszat követem.” – írja Ovidius az Átváltozások című művében. A közgazdászok elsősorban Adam Smith nevével fémjelzik a homo oeconomicus emberképének megalkotását, legismertebb művére, az 1776-ban megjelent A nemzetek gazdagságá-ra támaszkodva, és sokáig nem tulajdonítottak különösebb jelentőséget az 1759-es, Az erkölcsi érzelmek elmélete című művének, ami jelentősen árnyalja azt a képet, amit az önérdekkövető mészáros, sörfőző és pék segítségével festett elénk Adam Smith. Vernon Smith és Bart Wilson A közgazdaságtan humanizálása című könyvükben részletesen érvelnek a korábbi mű relevanciája, illetve a két könyv összhangja, kiegészítő jellege mellett, mondván, hogy „Smith oly módon modellezte a két világot, hogy azok egymáshoz tökéletesen illeszkedve megadják az emberi létet egységesen leíró társadalmi és erkölcsi tudományt” [Smith & Wilson, 2020, 27.o]. 
+
+A közgazdaságtani modellekben felhasznált feltételezéseket, miszerint a gazdasági szereplők szigorúan önérdekkövetők és racionálisak, nem csak Smith és Wilson kérdőjelezi meg, számos közgazdász foglalkozik a kérdéssel. Közülük is kiemelkedik Robert Shiller munkássága, aki már a pénzügyi válság előtt, Tőzsdemámor [2002] című könyvében is amellett érvelt, hogy a pénzügyi piacok működése alapvetően irracionális gazdasági szereplők magatartására épül. Egy későbbi művében [Shiller, 2020] a narratíváknak a válságokban, recessziókban betöltött szerepét hangsúlyozza. Meglátása szerint a piaci hangulatot nagyban befolyásolják a „szájról szájra”, vírus módjára terjedő narratívák, amik egyfajta önbeteljesítő jóslattá válhatnak. A gazdasági szereplők viselkedésének ezen megközelítésének matematikai modellezésére is történtek kísérletek. De Grauwe és Grimaldi [2006] az árfolyamok mozgására egy olyan keretben adnak magyarázatot, melyben az irracionalitás is szerepet kap, De Grauwe egy másik könyvében [2012] pedig egy viselkedési makroökonómiai modell felépítésére tesz kísérletet. Mindkét modellkeret arra az eredményre jut, hogy a várakozások öngerjesztő folyamatot képesek implikálni, ezek az öngerjesztő folyamatok pedig eszközbuborékokhoz, majd azok kipukkadásához vezethetnek. Ez jól megragadja azt, amit Shiller narratív közgazdaságtannak nevez. 
+
+Shiller fent említett könyvében [2020] kitér a bizalom szerepére is. A Franklin Roosevelt 1933-as beiktatási beszédét idézi: „Mindenekelőtt tehát hadd szögezzem le, hogy meggyőződésem, az egyetlen dolog, amitől félnünk kell, az a félelem maga – a névtelen, ésszerűtlen, indokolatlan rettegés, amely megbénítja a visszavonulást előrehaladásra váltó erőfeszítéseket.” [Shiller idézi Rooseveltet, 2020, 165.o]. Az amerikai elnök felismerte, hogy a nagy gazdasági világválság idején kritikus kérdés volt a gazdasági szereplők bizalmának visszanyerése, a piaci optimizmus ösztönzése. A bizalmatlanság, a bankostromok recessziókhoz vezetnek, ezen recessziókból pedig a bizalom visszaépítése jelenthet kiutat. Stevenson és Wolfers [2011] empirikusan támasztják alá a munkanélküliségi ráta – ami az üzleti ciklusok stilizált tényei alapján kontraciklikus változó - és a bizalmi index közti negatív kapcsolatot, és megmutatják, hogy a bankokba és a kormányzatba vetett bizalom a recessziós időszakokat megelőzően jellemzően csökkenő tendenciát mutattak az Egyesül Államokban, azonban a 2007-2009-es válság idején a kormányzatba vetett bizalom nőtt, ami vélhetően szükséges feltétele volt a kilábalásnak.[Ez a rész akkor tud releváns lenni, hogyha tudunk bizalmi indexeket bevonni a vizsgálatba]
+
+# Európai hozamgörbék
+
+A hozamgörbék recesszió előrejelző képességének vizsgálatát az amerikai állampapírok ihlették, azonban több tanulmány szentel kitüntetett figyelmet a különböző lejáratú európai államkötvények hozamkülönbségének. Estrella és Mishkin [1996; 1997] azt találják, hogy a német és a brit hozamszpredek meglehetősen jól teljesítenek a recessziók valószínűségének előrejelzésében – Chinn és Kucko [2010] hasonló eredményre jutnak - , bár a brit hozamszpred esetében gyakori, hogy magas valószínűséget becsül a gazdasági visszaesésnek olyan időszakban, amikor nem következett be recesszió. Vizsgálták továbbá a francia és az olasz hozamgörbéket is, ezek azonban nem bizonyultak a recessziókat előrejelző indikátoroknak. Duarte és szerzőtársai [2005] az euróövezet aggregált adatait használták fel, és probit modellel sikeresen tudták előrejelezni az Európai Gazdasági és Monetáris Uniót érintő recessziókat. 
+
+Tanulmányunkban egyrészt az Egyesült Államok „mintapéldáját” elemezzük, másrészt különböző európai országok esetében vizsgáljuk meg a hozamszpredek recesszió előrejelző képességét az elmúlt 25 évre visszatekintően. 
+
+# Adatok, módszertan
+
+A szakirodalomban a közgazdászok különböző hozamszpredeket választanak meg. Vannak, akik a vizsgált államkötvény lejárati idejének különbségének maximalizálását javasolják [pl. Ang és szerzőtársai, 2006], vannak, akik a rövid és közép távú kötvények hozamszpredjeit részesítik előnyben [pl. Estrella és szerzőtársai, 2003], megint mások a standardnak mondható 10 éves és 3 hónapos kötvények hozamainak különbségére esküsznek, bár a vizsgált hozamszpredek jellemzően nagyon hasonló pályát követnek [Bauer & Mertens, 2018b]. 
+
+Estrella és Mishkin [1996] tanulmányát véve kiindulóponték tanulmányunkban a 10 éves és a 3 hónapos állampapírok hozamának különbségének recesszió előrejelző képességét vizsgáljuk Magyarország, Franciaország, Olaszország, Németország, Nagy-Britannia és az Egyesült Államok esetében. A recessziókat reál GDP adatok Hodrick-Prescott-filterezésének segítségével definiáltuk. A HP-szűrő formálisan a következőképp írható fel:
+
+$$\min _{\tau}\left(\sum_{t=1}^{T}\left(y_{t}-\tau_{t}\right)^{2}+\lambda \sum_{t=2}^{T-1}\left[\left(\tau_{t+1}-\tau_{t}\right)-\left(\tau_{t}-\tau_{t-1}\right)\right]^{2}\right),$$
+
+ahol az első tag azt fejezi ki, mennyire követi jól az idősort a trend, míg a második azt, mennyire simán követi azt le. A lambda együttható határozza meg a kettő közti trade-offot, ezt a szakirodalomban használtaknak megfelelően 1600-nak választottuk meg a negyedéves adatok miatt. A HP-filterezés után megkaptuk a reál GDP ciklikus komponenseit, amelyek a trendtől vett eltérést mutatják. Recesszióként definiáljuk a tanulmányban azokat az időszakokat, amiket a reál GDP negatív ciklikus komponense jellemez.
+
+A különböző lejáratú állampapírok hozamaira vonatkozó napi adatokat az investing.com oldaláról töltöttük le, az egyes országok esetében különböző hosszúságú idősorokat tudtunk kinyerni az adatbázisból, illetve az adatok hiányossága is problémát jelentett. Mivel a modellben felhasznált hozamszpredet a két hozam különbségeként definiáltuk, így csak azok az időpontbeli megfigyeléseinket tudtuk felhasználni az elemzéshez, amelyek esetében mindkét lejáratú állampapírra volt adatunk. A reál GDP negyedéves, szezonálisan kiigazított értékeit az Eurostat, illetve a FRED adatbázisaiból nyertük ki. A hozamszpredek esetében a napi megfigyelések mértani átlagaként definiáltunk negyedéves értékeket.
+
+Tanulmányunkban probit modell segítségével ítéljük meg a hat vizsgált ország esetében a hozamszpredek predikciós képességét. Az előrejelző képességet 1-12 negyedéves időhorizonton vizsgáljuk, és loggörbék összehasonlításának segítségével döntünk arról, melyik késleltetés mellett prediktál a leghatékonyabban a modellünk. 
+
+
+```{r setup, include=FALSE, warning=F}
+knitr::opts_chunk$set(echo = F, comment = "", warning = F, message = F, cache = F, dev = "cairo_pdf", error = T)
+```
+
+```{r packages}
+# Set up --------------------------------------------------------------------------------
+
+## Packages ======W======================================================================= 
+
+library(tidyverse)
+library(patchwork)
+load("C:/school/szem_8/TDK-yieldcurve/yieldcurve/dat.RData") 
+load("C:/school/szem_8/TDK-yieldcurve/yieldcurve/dat2.RData") 
+# find the cleaning process in data_cleaning.R
+
+## Gg theme =============================================================================
+
+update_geom_defaults("point", list(fill = "gray70", 
+                                   shape = 21, 
+                                   color = "black", 
+                                   size = 1.4))
+update_geom_defaults("line", 
+                     list(color = "grey30", size = .9))
+
+update_geom_defaults("smooth", list(color = "red4", size = .9))
+
+update_geom_defaults("density", 
+                     list(color = "midnightblue", fill =  "midnightblue",
+                          alpha = .3, size = 1.4))
+
+extrafont::loadfonts(device="win")
+
+theme_set(theme_bw() + theme(
+  legend.direction = "vertical",
+  plot.caption = element_text(family = "serif")
+))
+
+```
+
+
+# Adatok
+
+
+```{r}
+dat_gdp <- dat_gdp %>% 
+  arrange(date) %>% 
+  group_by(country) %>% 
+  group_modify(~ mutate(.x, 
+                        trend = mFilter::hpfilter(values, freq = 1600)$trend[,1],
+                        cycle = mFilter::hpfilter(values, freq = 1600)$cycle))
+
+```
+
+
+```{r}
+dat_yields <- dat_yields %>% 
+  select(date, country, maturity, price) %>% 
+  mutate(
+    type = ifelse(maturity == '10 Y', 'long', 'short'),
+    maturity = factor(maturity, levels = c(paste(1:12, 'M'), paste(1:30, 'Y')))
+  )
+
+```
+
+
+```{r fig.cap = '3 hónapos és 10 éves lejáratú államkötvények hozamának és a kibocsátási rés alakulása országonként'}
+dat_yields %>% 
+  select(date, country, type, price) %>% 
+  pivot_wider(
+    names_from = type,
+    values_from = price
+  ) %>% 
+  mutate(
+    trigger = as.Date(ifelse(short > long, date, NA), origin = "1970-01-01")
+  ) %>% 
+  merge(
+    dat_yields %>%
+      filter(type == 'short') %>% 
+      select(country, maturity) %>% 
+      filter(!duplicated(country))
+  ) %>% 
+  {ggplot(.) +
+      geom_hline(yintercept = 0) +
+      geom_vline(aes(xintercept = trigger, color = "Inverz hozamgörbe")) +
+      geom_line(data = dat_gdp %>% 
+                  filter(date > lubridate::ymd('1990-01-01') & 
+                           country %in% unique(dat_yields$country)   
+                  ),
+                mapping = aes(date, (values/trend-1)*100, color = 'Kibocsátási rés (%)')
+      ) +
+      geom_line(aes(date, short, color = '3 havi')) +
+      geom_line(aes(date, long, color = '10 éves')) +
+      facet_wrap(~ country)} +
+  scale_color_viridis_d(direction = -1) +
+  labs(x = NULL, y = "Hozam/Trendtől vett százalékos eltérés", color = NULL) + 
+  theme(
+    legend.position = 'bottom',
+    legend.direction = 'horizontal'
+  )
+
+```
+
+```{r}
+dat_plm <- dat_yields %>% 
+  select(-maturity) %>% 
+  pivot_wider(values_from = price, names_from = type) %>% 
+  mutate(
+    date = lubridate::yq(paste0(str_sub(as.character(date), end = 4), 'Q', ((as.numeric(str_sub(as.character(date), start = 6, end = 7)) -1) %/% 3 + 1)))
+  ) %>% 
+  group_by(date, country) %>% 
+  summarise_all(.funs = function(x) prod(x)^(1/length(x))) %>% 
+  ungroup() %>% 
+  merge(dat_gdp) %>% 
+  arrange(date)
+
+```
+
+```{r}
+probit_models <- lapply(0:12, function(x) {
+  dat_plm %>% 
+    arrange(country, date) %>% 
+    tibble() %>% 
+    group_by(country) %>% 
+    group_modify(~ mutate(.x, cycle = lead(cycle, n = x))) %>% 
+    ungroup() %>% 
+    mutate(recession = factor(ifelse(cycle < 0, 1, 0)),
+           spread = long - short
+    ) %>% 
+    glm(formula = recession~spread,
+        family = binomial(link = "probit"))
+})
+
+```
+
+```{r}
+logit_models <- lapply(0:12, function(x) {
+  dat_plm %>% 
+    arrange(country, date) %>% 
+    tibble() %>% 
+    group_by(country) %>% 
+    group_modify(~ mutate(.x, cycle = lead(cycle, n = x))) %>% 
+    ungroup() %>% 
+    mutate(recession = factor(ifelse(cycle < 0, 1, 0)),
+           spread = long - short
+    ) %>% 
+    glm(formula = recession~spread,
+        family = binomial(link = "logit"))
+})
+
+```
+
+
+```{r fig.cap='Logit és probit modellekkel recceszió előrejelzése különböző késleltetések mellett.'}
+ggpubr::ggarrange(
+  lapply(probit_models, function(mod) {
+    broom::augment(mod, type.predict = "response") %>% 
+      {pROC::roc(.$recession, .$.fitted)} %>% 
+      {tibble(spec = .$specificities, sens = .$sensitivities)} %>% 
+      mutate(r = row_number())
+  }) %>% 
+    reduce(rbind) %>% 
+    mutate(
+      r = cumsum(ifelse(r == 1, 1, 0)) - 1,
+      r = factor(r, levels = as.character(0:12))
+    ) %>% 
+    ggplot(aes(x=spec, y=sens, color = r)) + 
+    geom_line() + 
+    scale_color_viridis_d() +
+    theme_minimal() + 
+    labs(x = 'Specificitás', y = 'Szenzitivitás', color = 'Késleltetések száma',
+         title = 'Probit modell'),
+  lapply(logit_models, function(mod) {
+    broom::augment(mod, type.predict = "response") %>% 
+      {pROC::roc(.$recession, .$.fitted)} %>% 
+      {tibble(spec = .$specificities, sens = .$sensitivities)} %>% 
+      mutate(r = row_number())
+  }) %>% 
+    reduce(rbind) %>% 
+    mutate(
+      r = cumsum(ifelse(r == 1, 1, 0)) - 1,
+      r = factor(r, levels = as.character(0:12))
+    ) %>% 
+    ggplot(aes(x=spec, y=sens, color = r)) + 
+    geom_line() + 
+    scale_color_viridis_d() +
+    theme_minimal() + 
+    labs(x = 'Specificitás', y = 'Szenzitivitás', color = 'Késleltetések száma',
+         title = 'Logit modell'),
+  common.legend = T
+)
+
+```
+
+
+```{r}
+logit_models %>% 
+  .[[5]] %>% 
+  broom::augment(newdata = tibble(spread = c(1.21, 0.76, 0.46, 0.22, 0.02, -0.17,
+                                             -0.5, -0.82, -1.13, -1.46, -1.85, -2.4)),
+                 type.predict = "response") %>% 
+  mutate(spread = spread/100) %>% 
+  mutate_all(function(x) scales::percent(x, decimal.mark = ',', accuracy = .01)) %>% 
+  set_names('Hozam szpread', 'Recesszió valószínűsége') %>% 
+  knitr::kable(caption = paste0(
+    'Recesszió valószínűsége különböző hozamszpreadek mellett a ',
+    'négy negyedéves késletéssel készített logit modell alapján'
+  ), align = c('c', 'c'))
+
+```
+
+```{r fig.cap='Döntési fa a rövid és hosszú távú hozamokkal és a szpreaddel a recesszió előrejelzésére'}
+dat_plm %>% 
+  arrange(country, date) %>% 
+  tibble() %>% 
+  group_by(country) %>% 
+  group_modify(~ mutate(.x, cycle = lead(cycle, n = 4))) %>% 
+  ungroup() %>% 
+  mutate(recession = factor(ifelse(cycle < 0, 1, 0)),
+         spread = long - short
+  ) %>% 
+  rpart::rpart(formula = recession~spread + long + short, cp = 0.02) %>% 
+  rattle::fancyRpartPlot(palettes = 'PuRd', 
+      sub = 'Négy negyedéves késletetéssel szerepel a recesszió a modellben, cp = 0,02.')
+
+```
+
+\pagebreak
+\nocite{*}
+\bibliography{yieldcurve}
+\bibliographystyle{agsm}
+
+\pagebreak
+
+# Függelék: R kódok
+
+```{r ref.label=setdiff(knitr::all_labels(), c("setup")), eval=FALSE, echo=T, attr.source='.numberLines'}
+```

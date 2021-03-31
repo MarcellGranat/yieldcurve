@@ -37,3 +37,22 @@ vignettes/*.pdf
 
 # R Environment Variables
 .Renviron
+yields raw csv/
+yields raw csv2/
+yields raw csv3/
+GDPC1.csv
+Szabo_Granat_TDK_2021.log
+Szabo_Granat_TDK_2021.pdf
+USAGDPNQDSMEI.csv
+
+dat2.RData
+dat3.RData
+namq_10_gdp_1_Data.csv
+
+DGS1.csv
+DGS10.csv
+GS1.csv
+GS10.csv
+yieldcurve.Rproj
+yieldcurve.bib
+
