@@ -21,7 +21,7 @@ header-includes:
 - \pretitle{\begin{center}\LARGE\includegraphics[width=5cm]{logo.png}\\[\bigskipamount]}
 - \posttitle{\end{center}}
 editor_options: 
-  chunk_output_type: inline
+  chunk_output_type: console
 ---
 
 \pagebreak
@@ -75,7 +75,9 @@ A szakirodalomban a közgazdászok különböző hozamszpredeket választanak me
 
 Estrella és Mishkin [1996] tanulmányát véve kiindulóponték tanulmányunkban a 10 éves és a 3 hónapos állampapírok hozamának különbségének recesszió előrejelző képességét vizsgáljuk Magyarország, Franciaország, Olaszország, Németország, Nagy-Britannia és az Egyesült Államok esetében. A recessziókat reál GDP adatok Hodrick-Prescott-filterezésének segítségével definiáltuk. A HP-szűrő formálisan a következőképp írható fel:
 
-$$\min _{\tau}\left(\sum_{t=1}^{T}\left(y_{t}-\tau_{t}\right)^{2}+\lambda \sum_{t=2}^{T-1}\left[\left(\tau_{t+1}-\tau_{t}\right)-\left(\tau_{t}-\tau_{t-1}\right)\right]^{2}\right),$$
+\begin{align}
+\min _{\tau}\left(\sum_{t=1}^{T}\left(y_{t}-\tau_{t}\right)^{2}+\lambda \sum_{t=2}^{T-1}\left[\left(\tau_{t+1}-\tau_{t}\right)-\left(\tau_{t}-\tau_{t-1}\right)\right]^{2}\right),
+\end{align}
 
 ahol az első tag azt fejezi ki, mennyire követi jól az idősort a trend, míg a második azt, mennyire simán követi azt le. A lambda együttható határozza meg a kettő közti trade-offot, ezt a szakirodalomban használtaknak megfelelően 1600-nak választottuk meg a negyedéves adatok miatt. A HP-filterezés után megkaptuk a reál GDP ciklikus komponenseit, amelyek a trendtől vett eltérést mutatják. Recesszióként definiáljuk a tanulmányban azokat az időszakokat, amiket a reál GDP negatív ciklikus komponense jellemez.
 
@@ -85,45 +87,54 @@ Tanulmányunkban probit modell segítségével ítéljük meg a hat vizsgált or
 
 
 ```{r setup, include=FALSE, warning=F}
-knitr::opts_chunk$set(echo = F, comment = "", warning = F, message = F, cache = F, dev = "cairo_pdf", error = T)
+knitr::opts_chunk$set(echo = F, comment = "", warning = F, message = F, cache = F, dev = "cairo_pdf", error = T, fig.align = 'center')
 ```
 
 ```{r packages}
 # Set up --------------------------------------------------------------------------------
 
-## Packages ======W======================================================================= 
+## Packages =============================================================================
 
 library(tidyverse)
 library(patchwork)
+library(knitr)
+library(ggthemes)
 load("C:/school/szem_8/TDK-yieldcurve/yieldcurve/dat.RData") 
 # find the cleaning process in data_cleaning.R
 
 ## Gg theme =============================================================================
 
-update_geom_defaults("point", list(fill = "gray70", 
+update_geom_defaults("point", list(fill = "#595959", 
                                    shape = 21, 
                                    color = "black", 
                                    size = 1.4))
-update_geom_defaults("line", 
-                     list(color = "grey30", size = .9))
+update_geom_defaults("line",
+                     list(color = "#E3120B", size = .9))
 
 update_geom_defaults("smooth", list(color = "red4", size = .9))
 
-update_geom_defaults("density", 
-                     list(color = "midnightblue", fill =  "midnightblue",
+update_geom_defaults("density",
+                     list(color = "#B6B6B6", fill =  "#B6B6B6",
                           alpha = .3, size = 1.4))
 
 extrafont::loadfonts(device="win")
 
-theme_set(theme_bw() + theme(
-  legend.direction = "vertical",
-  plot.caption = element_text(family = "serif")
-))
+theme_set(
+  theme_economist_white(gray_bg = F) + theme(
+    axis.ticks.length = unit(5, "points"),
+    axis.ticks.y  = element_line(colour = "gray", size=1.1),
+    axis.ticks.length.y = unit(.3, "cm"),
+    panel.grid.major = element_blank(),
+    plot.title = element_text(margin = margin(t = 0, r = 0, b = 10, l = 0)),
+    axis.title = element_text(margin = margin(t = 10, r = 10, b = 0, l = 0)),
+    legend.position = 'bottom'
+  )
+)
 
 ```
 
 
-```{r}
+```{r scrape_nber}
 library(rvest)
 dat_NBER <- read_html(
   'https://www.nber.org/research/data/us-business-cycle-expansions-and-contractions') %>% 
@@ -143,27 +154,14 @@ dat_NBER <- read_html(
   ) %>% 
   na.omit() %>% 
   apply(1, function(x) {
-seq.Date(from = lubridate::ymd(x[1]), to = lubridate::ymd(x[2]), by = "month")
+    seq.Date(from = lubridate::ymd(x[1]), to = lubridate::ymd(x[2]), by = "month")
   }) %>% 
   reduce(c) %>% 
   {tibble(date = lubridate::ymd(.))}
 
 ```
 
-```{r}
-dat_US_yield %>% 
-  pivot_longer(-1) %>% 
-  filter(!str_detect(name, 'D')) %>% 
-  mutate(
-    name = str_remove_all(name, '\\D'),
-    name = paste(name, 'év')
-    ) %>% 
-  ggplot(aes(date, value, color = name)) + 
-  geom_line()
-```
-
-```{r}
-
+```{r fig.cap= 'Az 10 és 1 éves hozamszpread és a recessziók közötti együttmozgás az USA-ban', fig.height=3}
 dat_US_yield %>% 
   transmute(
     date,
@@ -173,10 +171,14 @@ dat_US_yield %>%
   pivot_longer(-1) %>% 
   na.omit() %>% 
   ggplot(aes(date, value, color = name)) +
-  geom_vline(xintercept = dat_NBER$date, color = 'grey70') + 
+  geom_hline(yintercept = 0, color = '#D7D7D7') +
+  geom_vline(data = dat_NBER, mapping = aes(xintercept = dat_NBER$date, 
+                                            linetype = 'Recesszió'),
+             color = '#EBE9E0'
+  ) + 
   geom_line() + 
   scale_color_discrete(direction =-1) +
-  labs(x = NULL, y = 'Szpread', color = NULL)
+  labs(x = NULL, y = 'Szpread', color = NULL, linetype = NULL)
 
 ```
 
@@ -187,51 +189,167 @@ dat_NBER %>%
   mutate(recession = ifelse(is.na(recession), F, T)) %>% 
   mutate(
     date = lubridate::yq(paste0(str_sub(as.character(date), end = 4), 'Q', 
-        ((as.numeric(str_sub(as.character(date), start = 6, end = 7)) -1) %/% 3 + 1)))
+                                ((as.numeric(str_sub(as.character(date), start = 6,
+                                                     end = 7)) -1) %/% 3 + 1)))
   ) %>% 
   group_by(date) %>% 
-  summarise(recession = sum(recession), GS1 = mean(GS1, na.rm = T), GS10 = mean(GS10, na.rm = T)) %>% 
+  summarise(recession = sum(recession), GS1 = mean(GS1, na.rm = T), 
+            GS10 = mean(GS10, na.rm = T)) %>% 
   ungroup() %>% 
   mutate(
     recession = ifelse(recession > 0, T, F),
     spread = GS10 - GS1,
     spread = lag(spread, 4),
-  date_interval = ifelse(date < lubridate::ymd('1995-04-01'), '95 előtt', '95 után')
+    date_interval = ifelse(date < lubridate::ymd('1995-04-01'), '95 előtt', '95 után')
   ) %>% 
   {rbind(., mutate(., date_interval = 'teljes'))} %>% 
   group_by(date_interval) %>% 
   group_map(~ .x) %>% 
   lapply(function(x) {
-  glm(data = x, formula = recession~spread,
+    glm(data = x, formula = recession~spread,
         family = binomial(link = "probit")) %>% 
-  broom::augment(newdata = tibble(spread = c(1.21, 0.76, 0.46, 0.22, 0.02, -0.17,
-                                             -0.5, -0.82, -1.13, -1.46, -1.85, -2.4)),
-                 type.predict = "response") %>% 
+      broom::augment(newdata = tibble(spread = c(1.21, 0.76, 0.46, 0.22, 0.02, -0.17,
+                                                 -0.5, -0.82, -1.13, -1.46, -1.85, -2.4)),
+                     type.predict = "response") %>% 
       select(.fitted)
   }) %>% 
   reduce(cbind) %>% 
   set_names('95 előtt', '95 után', 'Teljes időszak') %>% 
   mutate(
     Szpread = c(1.21, 0.76, 0.46, 0.22, 0.02, -0.17,
-                                             -0.5, -0.82, -1.13, -1.46, -1.85, -2.4)/100
+                -0.5, -0.82, -1.13, -1.46, -1.85, -2.4)/100
   ) %>% 
   select(Szpread, everything()) %>% 
   mutate_all(function(x) scales::percent(x, accuracy = .01, decimal.mark = ',')) %>% 
-    knitr::kable(caption = paste0(
+  knitr::kable(caption = paste0(
     'Recesszió valószínűsége különböző hozamszpreadek mellett a ',
     'négy negyedéves késletéssel készített logit modell alapján'
   ), align = c('c', 'c', 'c', 'c'))
 
 ```
 
+```{r USA_1_10_roc, fig.width=3.5, fig.height=3.4}
+USA_1_10_roc <- dat_NBER %>% 
+  mutate(recession = T) %>% 
+  merge(dat_US_yield, all.y = T) %>% 
+  mutate(recession = ifelse(is.na(recession), F, T)) %>% 
+  mutate(
+    date = lubridate::yq(paste0(str_sub(as.character(date), end = 4), 'Q', 
+                                ((as.numeric(str_sub(as.character(date), start = 6, 
+                                                     end = 7)) -1) %/% 3 + 1)))
+  ) %>% 
+  group_by(date) %>% 
+  summarise(recession = sum(recession), GS1 = mean(GS1, na.rm = T), 
+            GS10 = mean(GS10, na.rm = T)) %>% 
+  ungroup() %>% 
+  mutate(
+    recession = ifelse(recession > 0, T, F),
+    spread = GS10 - GS1,
+    spread = lag(spread, 4)
+  ) %>% 
+  glm(formula = recession ~ spread,
+      family = binomial(link = "probit")) %>% 
+  broom::augment(type.predict = "response") %>% 
+  {pROC::roc(.$recession, .$.fitted)}
 
+USA_1_10_roc %>% 
+  {tibble(spec = .$specificities, sens = .$sensitivities)} %>% 
+  arrange(spec, sens) %>% 
+  ggplot(aes(x=1-spec, y=sens)) +
+  geom_ribbon(aes(ymin = 0, ymax = sens), color = '#E3120B', fill = '#E3120B',
+              alpha = .3) +
+  geom_line() +
+  scale_color_viridis_d() +
+  geom_abline(slope = 1, linetype = 2, color = '#595959') +
+     ggtext::geom_textbox(
+       aes(x = .6, y = .1),
+    label = paste('Görbe alatti terület (AUC) =',format(as.numeric(USA_1_10_roc$auc),
+                                                          digits = 2)),
+    size = 3, show.legend = F, color = '#121212',
+    fill = "cornsilk", box.color = "black", width = unit(5, 'cm'), 
+    box.padding = unit(.04, 'cm')
+  ) + 
+  # geom_text(aes(x = .6, y = .4), label = 
+  #             paste('Görbe alatti terület (AUC) =',format(as.numeric(USA_1_10_roc$auc),
+  #                                                         digits = 2))) +
+  scale_x_continuous(expand = c(0,0)) +
+  scale_y_continuous(expand = c(0,0)) +
+  theme_bw() +
+  labs(x = '1 - Specificitás', y = 'Szenzitivitás')
 
+```
 
+```{r fig.cap='Különböző hozamszpreadek recesszió előrejelző képességének vizsgálata az USA esetében'}
+dat_NBER %>% 
+  mutate(recession = T) %>% 
+  merge(dat_US_yield, all.y = T) %>% 
+  mutate(recession = ifelse(is.na(recession), F, T)) %>% 
+  mutate(
+    date = lubridate::yq(paste0(str_sub(as.character(date), end = 4), 'Q', 
+                                ((as.numeric(str_sub(as.character(date), start = 6, 
+                                                     end = 7)) -1) %/% 3 + 1)))
+  ) %>% 
+  group_by(date) %>% 
+  summarise_all(.funs = function(x) mean(x, na.rm = T)) %>% 
+  ungroup() %>% 
+  mutate(
+    recession = ifelse(recession > 0, T, F)
+  ) %>% 
+  mutate_at(-c(1:2), function(x) lag(x)) %>% 
+  select(-GS10, -GS1) %>% 
+  {
+    combinations <- expand.grid(short = names(.)[-c(1, 2)], long = names(.)[-c(1, 2)], 
+                                stringsAsFactors = F) %>%
+      mutate_all(.funs = function(x) {
+        ifelse(str_detect(x, 'M'), paste(str_remove_all(x, '\\D'), 'M'),
+               paste(str_remove_all(x, '\\D'), 'Y')) %>%
+          factor(levels = c(paste(1:12, 'M'), paste(1:50, 'Y')), ordered = T)
+      }) %>% 
+      filter(long > short)
+    
+    apply(combinations, 1, function(x) {
+      df <- rename_at(., -c(1:2), .funs = 
+                        function(x) ifelse(str_detect(x, 'M'), 
+                                           paste(str_remove_all(x, '\\D'), 'M'),
+                                           paste(str_remove_all(x, '\\D'), 'Y'))) %>% 
+        select(date, recession, x[1], x[2]) %>% 
+        na.omit() %>%  
+        mutate(spread = long - short)
+      auc <- glm(data = df, formula = recession~spread,
+                 family = binomial(link = "probit")) %>% 
+        broom::augment(type.predict = "response") %>% 
+        {pROC::roc(.$recession, .$.fitted)} %>% 
+        .$auc
+      tibble(short = x[1], long = x[2], n = nrow(df), auc = as.numeric(auc))
+    })
+  } %>% 
+  reduce(rbind) %>% 
+  mutate_at(1:2, .funs = function(x) {
+    ifelse(str_detect(x, 'M'), paste(str_remove_all(x, '\\D'), 'M'),
+           paste(str_remove_all(x, '\\D'), 'Y')) %>%
+      factor(levels = c(paste(1:12, 'M'), paste(1:50, 'Y')), ordered = T)
+  }) %>% 
+  ggplot() +
+  geom_tile(aes(short, long, fill = auc), color = 'black') + 
+  geom_text(aes(short, long, label = n, color = 'Megfigyelések száma')) +
+  scale_fill_viridis_c(direction = -1, guide = guide_colorbar(
+    frame.colour = 'black',
+    ticks.colour = 'black')) +
+  scale_color_manual(values = c('red')) + 
+  guides(
+    color = guide_legend(
+      override.aes = aes(label = "78")
+    )
+  ) +
+  labs(fill = 'AUC', x = 'Rövid távú államkötvény lejárata',
+       y = 'Hosszú távú államkötvény lejárata', color = NULL)
+
+```
 
 # Adatok
 
 
-```{r}
+```{r hp_filter}
 dat_gdp <- dat_gdp %>% 
   arrange(date) %>% 
   group_by(country) %>% 
@@ -241,177 +359,76 @@ dat_gdp <- dat_gdp %>%
 
 ```
 
+```{r fig.height=2.5}
+tune_nber_df <- dat_gdp %>% 
+  filter(country == 'US') %>% 
+  mutate(cycle = (cycle + trend)/trend - 1) %>% 
+  merge(mutate(dat_NBER, nber = T), all.x = T) %>% 
+  mutate(nber = ifelse(is.na(nber), F, T)) %>% 
+  select(cycle, nber) %>% 
+  {pROC::roc(.$nber, .$cycle)} %>% 
+  {tibble(threshold = .$thresholds, spec = .$specificities, sens = .$sensitivities)} %>% 
+  mutate(total = spec + sens) 
 
-```{r}
-dat_yields <- dat_yields %>% 
-  select(date, country, maturity, price) %>% 
-  mutate(
-    type = ifelse(maturity == '10 Y', 'long', 'short'),
-    maturity = factor(maturity, levels = c(paste(1:12, 'M'), paste(1:30, 'Y')))
+tune_nber_df %>% 
+  pivot_longer(-1) %>% 
+  mutate(ymin = ifelse(name == 'total', 1, 0)) %>% 
+  mutate(value = ifelse(name == 'total' & value < 1, 1, value)) %>% 
+  filter(threshold != Inf & threshold != -Inf) %>% 
+  ggplot(aes(threshold, value, color = name, fill = name)) +
+  scale_x_continuous(expand = c(0, 0)) +
+  # geom_area(show.legend = F, alpha = .3) +
+  geom_ribbon(aes(ymin = ymin, ymax = value), show.legend = F) +
+  geom_blank(data = 
+               data.frame(name = c('spec','spec', 'sens','sens', 'total', 'total'), 
+                          value = c(0, 1, 0, 1, 1, 1.4), 
+             threshold = rep(0, 6))) +
+  scale_y_continuous(expand = c(0, 0)) +
+  facet_wrap(~ name, nrow = 1, scales = 'free_y',
+             labeller = as_labeller(c('spec' = 'Specificitás',
+                                      'sens' = 'Szenzitivitás',
+                                      'total' = 'Specificitás + Szenzitivitás'
+                                      ))) + 
+  theme_bw() + 
+  scale_fill_economist() +
+  scale_color_economist() +
+  labs(x = 'Küszöbérték', y = NULL) +
+  geom_vline(data = data.frame(name = 'total', 
+    threshold = tune_nber_df$threshold[tune_nber_df$total == max(tune_nber_df$total)]), 
+             aes(xintercept = threshold), linetype = 3, color = '#E3120B', size = 1.4) +
+   ggtext::geom_textbox(
+    data = tibble(threshold = -.03, value = 1.3, name = 'total'),
+    label = paste0('A specificitás és szenzitivitás összegét a ',
+                  scales::percent( 
+                    tune_nber_df$threshold[tune_nber_df$total == max(tune_nber_df$total)],
+                  accuracy = .01, decimal.mark = ','),
+                  '-os küszöbérték mellett maximalizáljuk.'),
+    size = 2.1, show.legend = F, color = '#121212',
+    fill = "cornsilk", box.color = "black", width = unit(3, 'cm'), 
+    box.padding = unit(.04, 'cm')
   )
 
 ```
 
 
-```{r fig.cap = '3 hónapos és 10 éves lejáratú államkötvények hozamának és a kibocsátási rés alakulása országonként'}
+# Eu kiterjesztés
+
+```{r fig.cap = 'Megfigyelések száma országonként', fig.height=8}
 dat_yields %>% 
-  select(date, country, type, price) %>% 
-  pivot_wider(
-    names_from = type,
-    values_from = price
-  ) %>% 
-  mutate(
-    trigger = as.Date(ifelse(short > long, date, NA), origin = "1970-01-01")
-  ) %>% 
-  merge(
-    dat_yields %>%
-      filter(type == 'short') %>% 
-      select(country, maturity) %>% 
-      filter(!duplicated(country))
-  ) %>% 
-  {ggplot(.) +
-      geom_hline(yintercept = 0) +
-      geom_vline(aes(xintercept = trigger, color = "Inverz hozamgörbe")) +
-      geom_line(data = dat_gdp %>% 
-                  filter(date > lubridate::ymd('1990-01-01') & 
-                           country %in% unique(dat_yields$country)   
-                  ),
-                mapping = aes(date, (values/trend-1)*100, color = 'Kibocsátási rés (%)')
-      ) +
-      geom_line(aes(date, short, color = '3 havi')) +
-      geom_line(aes(date, long, color = '10 éves')) +
-      facet_wrap(~ country)} +
-  scale_color_viridis_d(direction = -1) +
-  labs(x = NULL, y = "Hozam/Trendtől vett százalékos eltérés", color = NULL) + 
-  theme(
-    legend.position = 'bottom',
-    legend.direction = 'horizontal'
-  )
-
-```
-
-```{r}
-dat_plm <- dat_yields %>% 
-  select(-maturity) %>% 
-  pivot_wider(values_from = price, names_from = type) %>% 
-  mutate(
-    date = lubridate::yq(paste0(str_sub(as.character(date), end = 4), 'Q', 
-                                ((as.numeric(str_sub(as.character(date), start = 6, end = 7)) -1) %/% 3 + 1)))
-  ) %>% 
-  group_by(date, country) %>% 
-  summarise_all(.funs = function(x) prod(x)^(1/length(x))) %>% 
+  group_by(country, maturity) %>% 
+  summarise(n = n()) %>% 
   ungroup() %>% 
-  merge(dat_gdp) %>% 
-  arrange(date)
-
-```
-
-```{r}
-probit_models <- lapply(0:12, function(x) {
-  dat_plm %>% 
-    arrange(country, date) %>% 
-    tibble() %>% 
-    group_by(country) %>% 
-    group_modify(~ mutate(.x, cycle = lead(cycle, n = x))) %>% 
-    ungroup() %>% 
-    mutate(recession = factor(ifelse(cycle < 0, 1, 0)),
-           spread = long - short
-    ) %>% 
-    glm(formula = recession~spread,
-        family = binomial(link = "probit"))
-})
-
-```
-
-```{r}
-logit_models <- lapply(0:12, function(x) {
-  dat_plm %>% 
-    arrange(country, date) %>% 
-    tibble() %>% 
-    group_by(country) %>% 
-    group_modify(~ mutate(.x, cycle = lead(cycle, n = x))) %>% 
-    ungroup() %>% 
-    mutate(recession = factor(ifelse(cycle < 0, 1, 0)),
-           spread = long - short
-    ) %>% 
-    glm(formula = recession~spread,
-        family = binomial(link = "logit"))
-})
-
-```
-
-
-```{r fig.cap='Logit és probit modellekkel recceszió előrejelzése különböző késleltetések mellett.'}
-ggpubr::ggarrange(
-  lapply(probit_models, function(mod) {
-    broom::augment(mod, type.predict = "response") %>% 
-      {pROC::roc(.$recession, .$.fitted)} %>% 
-      {tibble(spec = .$specificities, sens = .$sensitivities)} %>% 
-      mutate(r = row_number())
-  }) %>% 
-    reduce(rbind) %>% 
-    mutate(
-      r = cumsum(ifelse(r == 1, 1, 0)) - 1,
-      r = factor(r, levels = as.character(0:12))
-    ) %>% 
-    ggplot(aes(x=spec, y=sens, color = r)) + 
-    geom_line() + 
-    scale_color_viridis_d() +
-    theme_minimal() + 
-    labs(x = 'Specificitás', y = 'Szenzitivitás', color = 'Késleltetések száma',
-         title = 'Probit modell'),
-  lapply(logit_models, function(mod) {
-    broom::augment(mod, type.predict = "response") %>% 
-      {pROC::roc(.$recession, .$.fitted)} %>% 
-      {tibble(spec = .$specificities, sens = .$sensitivities)} %>% 
-      mutate(r = row_number())
-  }) %>% 
-    reduce(rbind) %>% 
-    mutate(
-      r = cumsum(ifelse(r == 1, 1, 0)) - 1,
-      r = factor(r, levels = as.character(0:12))
-    ) %>% 
-    ggplot(aes(x=spec, y=sens, color = r)) + 
-    geom_line() + 
-    scale_color_viridis_d() +
-    theme_minimal() + 
-    labs(x = 'Specificitás', y = 'Szenzitivitás', color = 'Késleltetések száma',
-         title = 'Logit modell'),
-  common.legend = T
-)
-
-```
-
-
-```{r}
-logit_models %>% 
-  .[[5]] %>% 
-  broom::augment(newdata = tibble(spread = c(1.21, 0.76, 0.46, 0.22, 0.02, -0.17,
-                                             -0.5, -0.82, -1.13, -1.46, -1.85, -2.4)),
-                 type.predict = "response") %>% 
-  mutate(spread = spread/100) %>% 
-  mutate_all(function(x) scales::percent(x, decimal.mark = ',', accuracy = .01)) %>% 
-  set_names('Hozam szpread', 'Recesszió valószínűsége') %>% 
-  knitr::kable(caption = paste0(
-    'Recesszió valószínűsége különböző hozamszpreadek mellett a ',
-    'négy negyedéves késletéssel készített logit modell alapján'
-  ), align = c('c', 'c'))
-
-```
-
-```{r fig.cap='Döntési fa a rövid és hosszú távú hozamokkal és a szpreaddel a recesszió előrejelzésére'}
-dat_plm %>% 
-  arrange(country, date) %>% 
-  tibble() %>% 
-  group_by(country) %>% 
-  group_modify(~ mutate(.x, cycle = lead(cycle, n = 4))) %>% 
-  ungroup() %>% 
-  mutate(recession = factor(ifelse(cycle < 0, 1, 0)),
-         spread = long - short
-  ) %>% 
-  rpart::rpart(formula = recession~spread + long + short, cp = 0.02) %>% 
-  rattle::fancyRpartPlot(palettes = 'PuRd', 
-      sub = 'Négy negyedéves késletetéssel szerepel a recesszió a modellben, cp = 0,02.')
+  pivot_wider(names_from = maturity, values_fill = 0, values_from = n) %>% 
+  pivot_longer(-1, names_to = 'maturity', values_to = 'n') %>% 
+  mutate(maturity = factor(maturity, levels = c(paste(1:12, 'M'), paste(1:50, 'Y')), 
+                           ordered = T)) %>% 
+  ggplot(aes(maturity, country, fill = n)) +
+  geom_tile(color = '#121212') + 
+  scale_x_discrete(labels = function(x) ifelse(x %in% c('1 M', '9 M', '1 Y', '50 Y'), x,
+    str_remove_all(x, '\\D'))) +
+  scale_fill_viridis_b(breaks = 1:4*2000, labels = paste(1:4*2, 'k')) + 
+  theme(legend.key.width = unit(1, 'cm'), axis.text.x = element_text(size = 8)) +
+  labs(y = NULL, x = 'Lejárat', fill = 'Megfigyelések száma (nap)')
 
 ```
 

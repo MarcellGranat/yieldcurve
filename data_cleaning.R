@@ -3,14 +3,6 @@ library(tidyverse)
 setwd("C:/school/szem_8/TDK-yieldcurve/yieldcurve/yields raw csv3")
 # this folder contains the csv files from 
 
-dat_yields %>% 
-  lapply(function(x) {
-    names(x) %>% 
-      length()
-  }) %>% 
-  reduce(c) %>% 
-  {which(. != 6)}
-
 dat_yields <- list.files(pattern = ".$") %>% 
   lapply(function(x) {
     read.csv(x) %>%
@@ -58,12 +50,27 @@ dat_gdp <- read_csv("C:/school/szem_8/TDK-yieldcurve/yieldcurve/namq_10_gdp_1_Da
       )
   )
 
-dat_US_yield <- read_csv("C:/school/szem_8/TDK-yieldcurve/yieldcurve/GS1.csv") %>% 
-merge(read_csv("C:/school/szem_8/TDK-yieldcurve/yieldcurve/GS10.csv"), all = T) %>% 
-merge(read_csv("C:/school/szem_8/TDK-yieldcurve/yieldcurve/DGS1.csv"), all = T) %>% 
-merge(read_csv("C:/school/szem_8/TDK-yieldcurve/yieldcurve/DGS10.csv"), all = T) %>% 
-  mutate_at(-1, function(x) as.numeric(x)) %>% 
-  mutate(date = lubridate::ymd(DATE)) %>% 
-  select(date, everything(), -DATE)
+setwd("C:/school/szem_8/TDK-yieldcurve/yieldcurve/usa_yields")
+# this folder contains the csv files from 
+
+dat_US_yield <- lapply(list.files(pattern = ".$"), function(x) {
+  df <- read_csv(x)
+  df %>% 
+    mutate(name = names(df)[2]) %>% 
+    set_names('date', 'value', 'name')
+}) %>% 
+  reduce(rbind) %>% 
+  mutate(value = as.numeric(value)) %>% 
+  pivot_wider(names_from = name, values_from = value)
+  
+
+
+# dat_US_yield <- read_csv("C:/school/szem_8/TDK-yieldcurve/yieldcurve/GS1.csv") %>% 
+# merge(read_csv("C:/school/szem_8/TDK-yieldcurve/yieldcurve/GS10.csv"), all = T) %>% 
+# merge(read_csv("C:/school/szem_8/TDK-yieldcurve/yieldcurve/DGS1.csv"), all = T) %>% 
+# merge(read_csv("C:/school/szem_8/TDK-yieldcurve/yieldcurve/DGS10.csv"), all = T) %>% 
+#   mutate_at(-1, function(x) as.numeric(x)) %>% 
+#   mutate(date = lubridate::ymd(DATE)) %>% 
+#   select(date, everything(), -DATE)
 
 save(list = c('dat_yields', 'dat_gdp', 'dat_US_yield'), file = 'C:/school/szem_8/TDK-yieldcurve/yieldcurve/dat.RData')
