@@ -1,0 +1,28 @@
+# Hivatkozások {#Chapter-6}
+
+```{css, echo=FALSE}
+p {
+  text-align: justify;
+}
+```
+
+* Ang, A., Piazzesi, M. & Wei, M. (2006), ‘What does the yield curve tell us about gdp growth?’, *Journal of econometrics* 131(1-2), 359–403.
+* Bauer, M. D. & Mertens, T. M. (2018), ‘Economic forecasts with the yield curve’, *FRBSF Economic Letter* 7, 8–07.
+* Bauer, M. D., Mertens, T. M. et al. (2018), ‘Information in the yield curve about future recessions’, *FRBSF Economic Letter* 20, 1–5.
+* Chauvet, M. & Potter, S. (2005), ‘Forecasting recessions using the yield curve’, *Journal of forecasting* 24(2), 77–103.
+* Chinn, M. D. & Kucko, K. J. (2010), The predictive power of the yield curve across countries and time, Technical report, National Bureau of Economic Research.
+* De Grauwe, P. (2012), *Lectures on behavioral macroeconomics*, Princeton University Press.
+* De Grauwe, P. & Grimaldi, M. (2018), *The exchange rate in a behavioral finance framework*, Princeton University Press.
+* Estrella, A. & Mishkin, F. S. (1996a), The yield curve as a predictor of recessions in the united states and europe’, *The Determination of Long-Term Interest Rates and Exchange Rates and the Role of Expectations. Basel: Bank for International Settlements*.
+* Estrella, A. & Mishkin, F. S. (1996b), The yield curve as a predictor of us recessions’, *Current issues in economics and finance* 2(7).
+* Estrella, A. & Mishkin, F. S. (1997), The predictive power of the term structure of interest rates in europe and the united states: Implications for the european central bank’, *European economic review* 41(7), 1375–1401.
+* Estrella, A. & Mishkin, F. S. (1998), ‘Predicting us recessions: Financial variables as leading indicators’, *Review of Economics and Statistics* 80(1), 45–61.
+* Estrella, A., Rodrigues, A. P. & Schich, S. (2003), ‘How stable is the predictive power of the yield curve? evidence from germany and the united states’, *Review of Economics and Statistics* 85(3), 629–644.
+* Haubrich, J. G. et al. (2006), Does the yield curve signal recession?’, *Federal Reserve Bank of Cleveland* 15.
+* International Monetary Fund (n.d.), ‘Financial development’. URL: https://data.imf.org
+* Keen, H. (1989), The yield curve as a predictor of business cycle turning points’, *Business Economics* pp. 37–43.
+* Stevens, E. J. et al. (1989), ‘Is there a message in the yield curve?’, Economic Commentary, *Federal Reserve Bank of Cleveland*,(March 15, 1989) .
+* Stevenson, B. & Wolfers, J. (2011), Trust in public institutions over the business cycle’, *American Economic Review* 101(3), 281–87.
+* Tamás, F. (2018), ‘A logisztikus regresszió és az általánosított lineáris modell’. URL: http://www.medstat.hu/oktatas/okonometriaI/FerenciTamas_OkonometriaI_ ALogisztikusRegresszioEsAzAltalanositottLinearisModell_lecturenote.pdf
+* Wooldridge, J. M. (2012), ‘Introductory econometrics: a modern approach (upper level economics titles)’, *Southwestern College Publishing* 41, 673–690.
+* Wright, J. H. (2006), The yield curve and predicting recessions’.

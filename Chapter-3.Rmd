@@ -1,0 +1,36 @@
+# Adatok, módszertan {#Chapter-3}
+
+```{css, echo=FALSE}
+p {
+text-align: justify;
+  }
+```
+
+A különböző lejáratú állampapírok hozamaira vonatkozó napi, illetve havi adatokat az investing.com oldaláról, illetve a FRED (2021a) adatbázisából töltöttük le, az egyes országok esetében különböző hosszúságú idősorokat tudtunk kinyerni az adatbázisból, illetve az adatok hiányossága is problémát jelentett. Mivel a modellben felhasznált hozamszpredet két hozam különbségeként definiáltuk, így csak azok az időpontbeli megfigyeléseinket tudtuk felhasználni az elemzéshez, amelyek esetében mindkét adott lejáratú állampapírra volt adatunk. A reál GDP negyedéves, szezonálisan kiigazított értékeit az Eurostat (2021), illetve a FRED (2021b) adatbázisaiból nyertük ki. A hozamszpredek esetében a napi megfigyelések mértani átlagaként definiáltunk negyedéves értékeket.
+
+A szakirodalomban a közgazdászok különböző hozamszpredeket választanak meg. Vannak, akik a vizsgált államkötvény lejárati idejének különbségének maximalizálását javasolják [pl. Ang és szerzőtársai, 2006], vannak, akik a rövid és közép távú kötvények hozamszpredjeit részesítik előnyben [pl. Estrella és szerzőtársai, 2003], megint mások a standardnak mondható 10 éves és 3 hónapos kötvények hozamainak különbségére esküsznek, bár a vizsgált hozamszpredek jellemzően nagyon hasonló pályát követnek [Bauer & Mertens, 2018b]. Tanulmányunkban mi is több lehetséges kombinációt vizsgálunk meg a különböző országok esetében.
+
+A tanulmányban probit modellt használunk az előrejelző képességek becslésére. A bináris eredményváltozót tartalmazó modellek alapvetően abban térnek el az OLS regresszióktól, hogy az eredményváltozó kétértékű, ami azt implikálja, hogy az Y-ra becsült érték, az előrejelzés tulajdonképpen egy csoportba sorolja az adott megfigyelést, klasszifikál. Az ilyen típusú eredményváltozók modellezésére leggyakrabban használt modellek a lineáris valószínűségi modellek (LPM), a logisztikus és probit modellek. Ezek közül az LPM a legkönnyebben kezelhető modell, azonban jelentős hátránya, hogy az előrejelzési valószínűségek kívül eshetnek a [0,1] intervallumon, illetve az ebben a modellkeretben számított parciális hatások olykor logikailag lehetetlenek [Wooldridge, 2012]. A logit regresszió alapgondolata, hogy bár a lineáris kombinációt megtartjuk, de annak az eredményét egy olyan függvényen eresztjük át, mely a ($-\propto$, $\propto$) intervallumot [0,1]-re képzi le [Ferenci, 2021].
+
+A probit modell egy ponton tér el alapvetően a logisztikus analízistől. A logittal szemben a probit a P valószínűség logisztikus eloszlásának feltételezése helyett standard normális eloszlásúnak feltételezi a valószínűség eloszlását. Ennek az eloszlásfüggvénynek azonban nincs zárt alakja, így a logit alkalmazása lényegesen egyszerűbb és elterjedtebb is. A probit modellünk ezek alapján a következőképp írható fel:
+
+```{=tex}
+\begin{align}
+E(Y\mid X)=P(Y=1\mid X)=\phi(\beta_0+\beta_{szpred}),
+\end{align}
+```
+ahol $\phi(z)=P(Z<z)$, $Z \sim N(0,1)$.
+
+A recessziókat reál GDP adatok Hodrick-Prescott-filterezésének segítségével definiáltuk az európai országok esetében, míg az Egyesült Államok esetében az NBER (2021) adatbázisa alapján határoztuk meg azokat. A HP-szűrő formálisan a következőképp írható fel:
+
+```{=tex}
+\begin{align}
+\min _{\tau}\left(\sum_{t=1}^{T}\left(y_{t}-\tau_{t}\right)^{2}+\lambda \sum_{t=2}^{T-1}\left[\left(\tau_{t+1}-\tau_{t}\right)-\left(\tau_{t}-\tau_{t-1}\right)\right]^{2}\right),
+\end{align}
+```
+
+ahol az első tag azt fejezi ki, mennyire követi jól az idősort a trend, míg a második azt, mennyire simán követi azt le. A lambda együttható határozza meg a kettő közti trade-offot, ezt a szakirodalomban használtaknak megfelelően 1600-nak választottuk meg a negyedéves adatok miatt. A HP-filterezés után megkaptuk a reál GDP ciklikus komponenseit, amelyek a trendtől vett eltérést mutatják. Recesszióként definiáljuk a tanulmányban azokat az időszakokat, amiket a reál GDP negatív ciklikus komponense jellemez.
+
+Tanulmányunkban kiindulópontként az USA esetében vizsgáljuk meg, hogy az Estrella és Mishkin [1996b] által levont következtetések az azóta eltelt 25 évre is implikálhatók-e. Ehhez -- az említett szerzőpárostól eltérően, akik a 10 éves és 3 hónapos lejárat melletti állampapírhozamokat használták fel -- az általunk hozzáférhető 10 éves és 1 éves lejáratú állampapírhozamok különbségét használtuk fel a modelljeinkben két különböző intervallumon, négy negyedéves késleltetéssel. Reprodukálva az említett tanulmányt a korábbi időszakunk 1962 első negyedévétől 1995 első negyedévéig tart, míg a második 1995 második negyedévétől kezdődik és napjainkig tart. A két időszakban megfigyelhető előrejelző képesség alapján vonunk le következtetéseket az 1996-ös megállapítások mai érvényességével kapcsolatban.
+
+Ezek után azt vizsgáljuk meg, hogy a használt 10 és 1 éves lejarát bizonyul-e a legjobb lejárat-kombinációnak az előrejelzési képesség szempontjából. Ezt követően pedig a vizsgálatunkat kiterjesztjük különböző európai országokra, melyek esetében a leghatékonyabban előrejelző lejárat-kombinációkat alkalmazzuk.

@@ -1,0 +1,17 @@
+# Következtetések, összegzés {#Chapter-5}
+
+```{css, echo=FALSE}
+p {
+  text-align: justify;
+}
+```
+
+Tanulmányunkban egy probit modell segítségével először azt vizsgáltuk, hogy az Egyesült Államok esetében megfigyelt, 10 éves és 1 éves lejáratú állampapírhozamok különbségeként definiált hozamszpred négy negyedéves időtávon való előrejelzőképessége változott-e az elmúlt 25 éveben az 1995 előtti időszakhoz képest. Azt találtuk, hogy bár enyhén, de csökkent a hozamszpredek előrejelzési képessége a második időszakra. 
+
+Ezután az Egyesült Államok adatait felhasználva kerestük meg a recesszióket leghatékonyabban előrejelző lejáratkombinációt. Az eredményeink alapján a 7 éves és 1 éves hozamok különbsége teljesít a legjobban az előrejelzésben. 
+
+Mielőtt a modellt kiterjesztettük, megkerestük a GDP ciklikus komponensének azt a 0,46%-os küszöbértékét, ami alatt elmondható, hogy egy gazdaság recesszióban van. Az eddigi eredményeket felhasználva lefuttattuk a modellt különböző európai országok esetében is, és azt találtuk, hogy egyes országok modelljei az Egyesült Államokénál is hatékonyabban jelez előre. Ezek alapján elmondható, hogy a modell nem csak az Egyesült Államok adatain működik.
+
+Az eredményeink alapján Nagy-Britannia, Svájc és Belgium esetében kiemelkedő a modell klasszifikációs képessége, míg Olaszország és Portugália esetében az AUC mutató viszonylag alacsony értéket vett fel, a többi vizsgált ország modellje pedig nagyjából azonos, 0.6-os érték küröli AUC mutatóval dicsekedhet. Ezeket az eredményeket összevetettük az IMF [2021] Financial Development indexével, mely az adott gazdaságok pénzpiaci fejlettségét hivatott mérni. Azt találtuk, hogy az eredményeink nagyrészt összhangban vannak azzal a feltételezéssel, hogy a fejlettebb pénzügypiacok esetében jobb a hozamszpredek recesszió előrjelző képessége, mivel ezen index alapján Sváj és Nagy-Britannia kiemelkedően teljesít, míg pl. az olaszok és a portugálok alacsonyabb indexet érdemeltek ki az évek során az IMF megítélése szerint. Belgium viszont a modellünk alapján jól teljesít, ennek ellenére viszonylag alacsony az FD indexe, ebből pedig arra következtethetünk, hogy a pénzpiaci fejlettségen túl egyéb tényezők is befolyásolják a hozamszpredek előrjelező képességét. 
+
+További elemzések elvégzéséhez érdemes lenne a modellbe egyéb magyarázóváltozókat is bevonni, hogy teljesebb képet kapjunk arra vonatkozóan, hogyan alakultak a múltban a pénzügyi és reál mutatók a válságokat megelőzően. Egy ilyen kép hozzásegítheti a közgazdászokat ahhoz, hogy a jövőben időben észrevegyék, ha a gazdaság egy recesszió felé tart, és magabiztosan intervenáljanak a megfelelő eszközökkel. 

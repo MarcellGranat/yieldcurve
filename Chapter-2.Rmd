@@ -1,0 +1,11 @@
+# Európai hozamgörbék {#Chapter-2}
+
+```{css, echo=FALSE}
+p {
+  text-align: justify;
+}
+```
+
+A hozamgörbék recesszió előrejelző képességének vizsgálatát az amerikai állampapírok ihlették, azonban több tanulmány szentel kitüntetett figyelmet a különböző lejáratú európai államkötvények hozamkülönbségének. Estrella és Mishkin [1996b; 1997] azt találják, hogy a német és a brit hozamszpredek meglehetősen jól teljesítenek a recessziók valószínűségének előrejelzésében -- Chinn és Kucko [2010] hasonló eredményre jutnak - , bár a brit hozamszpred esetében gyakori, hogy magas valószínűséget becsül a gazdasági visszaesésnek olyan időszakban, amikor nem következett be recesszió. Vizsgálták továbbá a francia és az olasz hozamgörbéket is, ezek azonban nem bizonyultak a recessziókat előrejelző indikátoroknak. Duarte és szerzőtársai [2005] az euróövezet aggregált adatait használták fel, és probit modellel sikeresen tudták előrejelezni az Európai Gazdasági és Monetáris Uniót érintő recessziókat.
+
+Tanulmányunkban egyrészt az Egyesült Államok „mintapéldáját" elemezzük, másrészt különböző európai országok esetében vizsgáljuk meg a hozamszpredek recesszió előrejelző képességét az elmúlt 25 évre visszatekintően.

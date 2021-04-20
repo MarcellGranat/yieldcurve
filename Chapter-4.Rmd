@@ -1,148 +1,14 @@
----
-title: "Az európai hozamgörbék recesszió előrejelző képességének empirikus vizsgálata"
-author: "Szabó Dorottya és Granát Marcell"
-date: \today
-output: 
-  pdf_document: 
-    fig_caption: yes
-    toc: yes
-    toc_depth: 4
-header-includes:
-- \usepackage{fancyhdr}
-- \usepackage[hungarian]{babel}
-- \usepackage{natbib}
-- \pagestyle{fancy}
-- \fancyhf{}
-- \fancyhead[RE,LO]{\leftmark}
-- \fancyfoot[C]{\thepage}
-- \usepackage{lscape}
-- \usepackage{pdfpages}
-- \usepackage{titling}
-- \pretitle{\begin{center}\LARGE\includegraphics[width=15cm]{corvinustdk.png}\\[\bigskipamount]}
-- \posttitle{\end{center}}
----
+# Eredmények {#Chapter-4}
 
-\pagebreak
-
-\renewcommand{\abstractname}{Absztrakt}
-
-```{=tex}
-\begin{abstract}
-
-Számos okból kifolyólag az államkötvények hozamgörbéje a recessziók pontos előrejelzőjének bizonyul az USA-ban. Tanulmányunkban empirikusan vizsgáljuk meg, hogy az európai országok esetében is megfigyelhető-e ez az összefüggés. Az elemzési eszközök körébe tartozik a Hodrick-Prescott-filter, illetve a probit modell. A szakirodalomban megtalálható modellezési eljárást kívánjuk kiterjeszteni az optimális államkötvény lejárat párosítású szpred meghatározásával, és annak vizsgálatával, hogy eredményünk robosztusságot mutat-e az európai hozamgörbékre kiterjesztve is.
-Kutatásunk fő eredményei közé tartozik, hogy az Egyesült Államok esetében legjobb előrejelzőnek a 7 és 1 éves lejáratú államkötvények hozamából számított szpred bizonyult a legjobb előrejelzőnek, amely hasonlóan jól prediktálja a gazdasági válságok megjelenését az európai országok esetében is.
-
-\end{abstract}
+```{css, echo=FALSE}
+p {
+  text-align: justify;
+}
 ```
-```{=tex}
-\listoftables
-\listoffigures
-```
-\pagebreak
-
-# Bevezetés
-
-A hozamgörbék recesszió előrejelző képességét az 1980-as évek végén kezdték el vizsgálni [pl. Keen, 1989; Stevens, 1989] , a '90-es évek végére pedig komoly szakirodalma lett a témának. Ezek a tanulmányok azt vizsgálják, hogy a különböző lejáratú államkötvények hozamainak különbsége időben hogyan alakul, illetve hogy ez a különbség milyen kapcsolatban áll a reálgazdaság teljesítményével. Az empíria azt mutatja, hogy a gazdasági visszaeséseket a hozamgörbék invertálódása előzi meg, ami azt jelenti, hogy a rövid lejáratú állampapírok hozamai magasabbak, mint a hosszú lejáratú állampapíroké, tehát a hozamszpred negatív tartományba kerül. Ekkor tehát a befektetők a rövid távú befektetéseket kockázatosabbnak ítélik meg, mint a hosszú távú befektetéseket, ami ellent mond az általános gazdasági viselkedésnek. Két tipikus elemzés terjedt el: (1) a GDP növekedési rátájának kvantitatív előrejelzése folytonos modellekkel, (2) a recessziók valószínűségének előrejelzése bináris modellekkel. Estrella és szerzőtársai [2003] azt találják, hogy az utóbbi típusú elemzések jobban teljesítenek.
-
-Estrella és Fishkin [1996] egy rövid tanulmányukban amellett érvelnek, hogy a hozamszpredek többek között azért is jó indikátorok, mivel a monetáris politikának erős hatása van rá, és így ezen keresztül a reálgazdaságot is képes lehet befolyásolni. Emellett a hozamszpredek tartalmazzák az inflációs és a kamatlábra vonatkozó várakozásokat is, amelynek szintén fontos szerepet tulajdonítanak a szerzők. Ugyanez a szerzőpáros [Estrella & Mishkin, 1998] egy hosszabb tanulmányukban pénzügyi indikátorok, köztük különböző kamatlábak, részvényárak, monetáris aggregátumok és a hozamszpred előrejelző képességét vizsgálták probit modellek segítségével. Azt találták, hogy míg 1-3 negyedéves időhorizonton a részvényárak és a monetáris aggregátumok egyaránt jól jeleznek előre a mintán kívül, addig az ennél távolibb időpontokra való előrejelzésben egyértelműen a hozamszpred emelkedik ki, és jellemzően önmagában, tehát minden más változó bevonása nélkül teljesít jól. Wright [2006] ezzel ellentétes következtetésre jut, tanulmányában megállapítja, hogy a hozamszpredek önmagukban kevésbé jól jeleznek előre recessziót, mint amikor a modell külön változóként a hozamokat is tartalmazza.
-
-Érdekesség azonban, hogy az előbb idézett tanulmány alapján az utóbbi modellek 2006-ban nem jeleztek előre recessziót, míg a hozamszpredek önmagukban igen. Wright a többváltozós modellnek hitt, később kiderült, hogy tévedett. A 2007-2009-es válságot megelőzően a Federal Reserve egy másik elemzője, Haubrich [2005] is arra a végső következtetésre jut cikkében, hogy nem valószínű, hogy a csökkenő hozamszpredek recessziót jeleznek előre.
-
-A Nagy Recessziót követő időszakban számos további tanulmány született a témában [pl. Rudebusch & Williams, 2009; Chinn & Kucko, 2010], 2017-től pedig ismét laposodott az amerikai hozamgörbe. Bauer és Mertens [2018a] tanulmányukban megállapítják, hogy a hozamszpred kritikus határértéke a 0, tehát egy 0-hoz közeli, de pozitív érték még nem ad okot aggodalomra, viszont a negatív hozamgörbe már vészjósló jelenség. A szerzőpáros amellett érvelt, hogy mivel a pénzügyi válság utáni időszakot amúgy is egy alacsony kamat- és hozamkörnyezet jellemezte, ami történelmi összehasonlításban is különös jelenség, nem vonható le messzemenő következtetés a hozamszpredek alakulása alapján.
-
-2019 elején már sorra írták meg a különböző sajtóorgánumok is, köztük a Forbes, illetve a Bloomberg, hogy az amerikai hozamgörbe laposodik, és csak idő kérdése, hogy inverz hozamgörbéről beszéljünk, ami pedig egy közelgő recesszió gyanúját keltette a közgazdászokban. 2019 augusztusában az amerikai hosszú és rövid távú állampapírhozamok különbsége negatív értéket vett fel [FRED, 2021], a prognosztizált pénzügyi válság helyett azonban a koronavírus járvány következtében nézhettünk, illetve nézhetünk szembe egy komoly gazdasági visszaeséssel. Ez a jelenség sokféle spekulációnak és konspirációs elméletnek adott teret, és sok emberben felmerült a kérdés, hogy csupán egy véletlen egybeeséssel nézünk-e szembe.
-
-Chauvet és Potter [2005] tanulmányukban a standard probit modell előrejelző képességét hasonlították össze szofisztikáltabb, kiterjesztett probit modellekével. Az utóbbiak jellemzően hatékonyabban jeleztek előre a mintán kívül, azonban egyedül a standard modell jósolt recessziót 2001 végére a 2001 márciusáig rendelkezésre álló információk alapján. A szerzők amellett érvelnek, hogy ez alapján téves lenne azt a következtetést levonni, miszerint a standard modell jobban teljesít, hiszen a modell rendelkezésére álló információk nem tartalmazták az év szeptember 11-i eseményeit, az Egyesült Államokat ért terrortámadást, ami pedig jelentősen hozzájárult a 2001-es gazdasági visszaeséshez. Nehéz lenne megmondani, hogy ez a kijelentésük magától értetődő-e, ahogy azt is, hogy a 2019-es hozamgörbék előrejelezhették-e egy világméretű egészségügyi járvány gazdasági hatásait, mindenesetre a hozamszpredek kérdése töretlen erővel nyújt ihletet a közgazdászoknak.
-
-# Európai hozamgörbék
-
-A hozamgörbék recesszió előrejelző képességének vizsgálatát az amerikai állampapírok ihlették, azonban több tanulmány szentel kitüntetett figyelmet a különböző lejáratú európai államkötvények hozamkülönbségének. Estrella és Mishkin [1996b; 1997] azt találják, hogy a német és a brit hozamszpredek meglehetősen jól teljesítenek a recessziók valószínűségének előrejelzésében -- Chinn és Kucko [2010] hasonló eredményre jutnak - , bár a brit hozamszpred esetében gyakori, hogy magas valószínűséget becsül a gazdasági visszaesésnek olyan időszakban, amikor nem következett be recesszió. Vizsgálták továbbá a francia és az olasz hozamgörbéket is, ezek azonban nem bizonyultak a recessziókat előrejelző indikátoroknak. Duarte és szerzőtársai [2005] az euróövezet aggregált adatait használták fel, és probit modellel sikeresen tudták előrejelezni az Európai Gazdasági és Monetáris Uniót érintő recessziókat.
-
-Tanulmányunkban egyrészt az Egyesült Államok „mintapéldáját" elemezzük, másrészt különböző európai országok esetében vizsgáljuk meg a hozamszpredek recesszió előrejelző képességét az elmúlt 25 évre visszatekintően.
-
-# Adatok, módszertan
-
-A különböző lejáratú állampapírok hozamaira vonatkozó napi, illetve havi adatokat az investing.com oldaláról, illetve a FRED (2021a) adatbázisából töltöttük le, az egyes országok esetében különböző hosszúságú idősorokat tudtunk kinyerni az adatbázisból, illetve az adatok hiányossága is problémát jelentett. Mivel a modellben felhasznált hozamszpredet két hozam különbségeként definiáltuk, így csak azok az időpontbeli megfigyeléseinket tudtuk felhasználni az elemzéshez, amelyek esetében mindkét adott lejáratú állampapírra volt adatunk. A reál GDP negyedéves, szezonálisan kiigazított értékeit az Eurostat (2021), illetve a FRED (2021b) adatbázisaiból nyertük ki. A hozamszpredek esetében a napi megfigyelések mértani átlagaként definiáltunk negyedéves értékeket.
-
-A szakirodalomban a közgazdászok különböző hozamszpredeket választanak meg. Vannak, akik a vizsgált államkötvény lejárati idejének különbségének maximalizálását javasolják [pl. Ang és szerzőtársai, 2006], vannak, akik a rövid és közép távú kötvények hozamszpredjeit részesítik előnyben [pl. Estrella és szerzőtársai, 2003], megint mások a standardnak mondható 10 éves és 3 hónapos kötvények hozamainak különbségére esküsznek, bár a vizsgált hozamszpredek jellemzően nagyon hasonló pályát követnek [Bauer & Mertens, 2018b]. Tanulmányunkban mi is több lehetséges kombinációt vizsgálunk meg a különböző országok esetében.
-
-A tanulmányban probit modellt használunk az előrejelző képességek becslésére. A bináris eredményváltozót tartalmazó modellek alapvetően abban térnek el az OLS regresszióktól, hogy az eredményváltozó kétértékű, ami azt implikálja, hogy az Y-ra becsült érték, az előrejelzés tulajdonképpen egy csoportba sorolja az adott megfigyelést, klasszifikál. Az ilyen típusú eredményváltozók modellezésére leggyakrabban használt modellek a lineáris valószínűségi modellek (LPM), a logisztikus és probit modellek. Ezek közül az LPM a legkönnyebben kezelhető modell, azonban jelentős hátránya, hogy az előrejelzési valószínűségek kívül eshetnek a [0,1] intervallumon, illetve az ebben a modellkeretben számított parciális hatások olykor logikailag lehetetlenek [Wooldridge, 2012]. A logit regresszió alapgondolata, hogy bár a lineáris kombinációt megtartjuk, de annak az eredményét egy olyan függvényen eresztjük át, mely a ($-\propto$, $\propto$) intervallumot [0,1]-re képzi le [Ferenci, 2021].
-
-A probit modell egy ponton tér el alapvetően a logisztikus analízistől. A logittal szemben a probit a P valószínűség logisztikus eloszlásának feltételezése helyett standard normális eloszlásúnak feltételezi a valószínűség eloszlását. Ennek az eloszlásfüggvénynek azonban nincs zárt alakja, így a logit alkalmazása lényegesen egyszerűbb és elterjedtebb is. A probit modellünk ezek alapján a következőképp írható fel:
-
-```{=tex}
-\begin{align}
-E(Y\mid X)=P(Y=1\mid X)=\phi(\beta_0+\beta_{szpred}),
-\end{align}
-```
-ahol $\phi(z)=P(Z<z)$, $Z \sim N(0,1)$.
-
-A recessziókat reál GDP adatok Hodrick-Prescott-filterezésének segítségével definiáltuk az európai országok esetében, míg az Egyesült Államok esetében az NBER (2021) adatbázisa alapján határoztuk meg azokat. A HP-szűrő formálisan a következőképp írható fel:
-
-```{=tex}
-\begin{align}
-\min _{\tau}\left(\sum_{t=1}^{T}\left(y_{t}-\tau_{t}\right)^{2}+\lambda \sum_{t=2}^{T-1}\left[\left(\tau_{t+1}-\tau_{t}\right)-\left(\tau_{t}-\tau_{t-1}\right)\right]^{2}\right),
-\end{align}
-```
-
-ahol az első tag azt fejezi ki, mennyire követi jól az idősort a trend, míg a második azt, mennyire simán követi azt le. A lambda együttható határozza meg a kettő közti trade-offot, ezt a szakirodalomban használtaknak megfelelően 1600-nak választottuk meg a negyedéves adatok miatt. A HP-filterezés után megkaptuk a reál GDP ciklikus komponenseit, amelyek a trendtől vett eltérést mutatják. Recesszióként definiáljuk a tanulmányban azokat az időszakokat, amiket a reál GDP negatív ciklikus komponense jellemez.
-
-Tanulmányunkban kiindulópontként az USA esetében vizsgáljuk meg, hogy az Estrella és Mishkin [1996b] által levont következtetések az azóta eltelt 25 évre is implikálhatók-e. Ehhez -- az említett szerzőpárostól eltérően, akik a 10 éves és 3 hónapos lejárat melletti állampapírhozamokat használták fel -- az általunk hozzáférhető 10 éves és 1 éves lejáratú állampapírhozamok különbségét használtuk fel a modelljeinkben két különböző intervallumon, négy negyedéves késleltetéssel. Reprodukálva az említett tanulmányt a korábbi időszakunk 1962 első negyedévétől 1995 első negyedévéig tart, míg a második 1995 második negyedévétől kezdődik és napjainkig tart. A két időszakban megfigyelhető előrejelző képesség alapján vonunk le következtetéseket az 1996-ös megállapítások mai érvényességével kapcsolatban.
-
-Ezek után azt vizsgáljuk meg, hogy a használt 10 és 1 éves lejarát bizonyul-e a legjobb lejárat-kombinációnak az előrejelzési képesség szempontjából. Ezt követően pedig a vizsgálatunkat kiterjesztjük különböző európai országokra, melyek esetében a leghatékonyabban előrejelző lejárat-kombinációkat alkalmazzuk.
-
-# Eredmények
 
 ## Eredmények az Egyesült Államok adatai alapján
 
 Az Egyesült Államok esetében először az 10 éves lejáratú állampapírhozamok és az 1 éves lejáratú állampapírhozamok különbségének alakulását vetettük össze az NBER által recesszióknak definiált időszakok alakulásával. Az 1. ábrán látható a havi, illetve napi hozamszpredek alakulása, az előbbiek esetében 1953 áprilisától kezdődő, az utóbbiak esetében pedig 1962 januárjától kezdődő és mindkét esetben 2021 márciusáig terjedő időintervallumon. Fontos kiemelni, hogy tanulmányunkban a későbbi lejáratú hozamokból vontuk ki a korábbit, bár a szakirodalomban ritkán, de előfordul, hogy a különbséget a „rövid-hosszú" formában definiálják. A mi eljárásunkból az következik, hogy az ábrán azok az időpontok jelzik a hozamgörbék invertálódását, ahol a hozamszpred a negatív tartományba esik.
-
-```{r setup, include=FALSE, warning=F}
-knitr::opts_chunk$set(echo = F, comment = "", warning = F, message = F, cache = T, dev = "cairo_pdf", error = T, fig.align = 'center')
-```
-
-```{r packages}
-# Set up --------------------------------------------------------------------------------
-
-## Packages =============================================================================
-
-library(tidyverse)
-library(patchwork)
-library(knitr)
-library(ggthemes)
-load("C:/school/szem_8/TDK-yieldcurve/yieldcurve/dat.RData") 
-# find the cleaning process in data_cleaning.R
-
-## Gg theme =============================================================================
-
-update_geom_defaults("point", list(fill = "#595959", 
-                                   shape = 21, 
-                                   color = "black", 
-                                   size = 1.4))
-update_geom_defaults("line",
-                     list(color = "#E3120B", size = .9))
-
-update_geom_defaults("smooth", list(color = "red4", size = .9))
-
-update_geom_defaults("density",
-                     list(color = "#B6B6B6", fill =  "#B6B6B6",
-                          alpha = .3, size = 1.4))
-
-extrafont::loadfonts(device="win")
-
-theme_set(
-  theme_economist_white(gray_bg = F) + theme(
-    axis.ticks.length = unit(5, "points"),
-    axis.ticks.y  = element_line(colour = "gray", size=1.1),
-    axis.ticks.length.y = unit(.3, "cm"),
-    panel.grid.major = element_blank(),
-    plot.title = element_text(margin = margin(t = 0, r = 0, b = 10, l = 0)),
-    axis.title = element_text(margin = margin(t = 10, r = 10, b = 0, l = 0)),
-    legend.position = 'bottom'
-  )
-)
-
-```
 
 ```{r scrape_nber}
 library(rvest)
@@ -268,7 +134,7 @@ ahol TN (True Negative) itt azokat a klasszifikációkat foglalja magában, mely
 
 A ROC görbét egy olyan koordinátarendszerben tudjuk ábrázolni, melynek y tengelyén a szenzitivitás különböző értékeit, míg az x tengelyen az 1-specicitás különböző értékeit jelenítjük meg 0 és 1 között. A modellünk alapján kirajzolható ROC görbét a 2. ábra mutatja.
 
-```{r USA_1_10_roc, fig.width=3.5, fig.height=3.4, fig.cap='Az 10 és 1 éves hozamszpread alapján készített probit-modell ROC görbéje'}
+```{r fig.width=5, fig.height=5, fig.cap='Az 10 és 1 éves hozamszpread alapján készített probit-modell ROC görbéje'}
 USA_1_10_roc <- dat_NBER %>% 
   mutate(recession = T) %>% 
   merge(dat_US_yield, all.y = T) %>% 
@@ -625,30 +491,3 @@ mod_output %>%
 
 A 6. ábra alsó paneljéről olvashatók le az egyes országokhoz tartozó AUC értékek, melyek alapján azt mondhatjuk, hogy a vizsglt európai hozamgörbék többségében esetében is megfigyelhető a jó recesszió előrejelző képesség. A belga, svájci és brit adatokon futtatott modell az Egyesült Államok modelljénél is jobban teljesít ezen mérőszám alapján, illetve az összes európai megfigyelésen futtatott modell teljesítménye alig marad el az Egyesült Államokétól.
 
-
-# Következtetések, összegzés
-
-Tanulmányunkban egy probit modell segítségével először azt vizsgáltuk, hogy az Egyesült Államok esetében megfigyelt, 10 éves és 1 éves lejáratú állampapírhozamok különbségeként definiált hozamszpred négy negyedéves időtávon való előrejelzőképessége változott-e az elmúlt 25 éveben az 1995 előtti időszakhoz képest. Azt találtuk, hogy bár enyhén, de csökkent a hozamszpredek előrejelzési képessége a második időszakra. 
-
-Ezután az Egyesült Államok adatait felhasználva kerestük meg a recesszióket leghatékonyabban előrejelző lejáratkombinációt. Az eredményeink alapján a 7 éves és 1 éves hozamok különbsége teljesít a legjobban az előrejelzésben. 
-
-Mielőtt a modellt kiterjesztettük, megkerestük a GDP ciklikus komponensének azt a 0,46%-os küszöbértékét, ami alatt elmondható, hogy egy gazdaság recesszióban van. Az eddigi eredményeket felhasználva lefuttattuk a modellt különböző európai országok esetében is, és azt találtuk, hogy egyes országok modelljei az Egyesült Államokénál is hatékonyabban jelez előre. Ezek alapján elmondható, hogy a modell nem csak az Egyesült Államok adatain működik.
-
-Az eredményeink alapján Nagy-Britannia, Svájc és Belgium esetében kiemelkedő a modell klasszifikációs képessége, míg Olaszország és Portugália esetében az AUC mutató viszonylag alacsony értéket vett fel, a többi vizsgált ország modellje pedig nagyjából azonos, 0.6-os érték küröli AUC mutatóval dicsekedhet. Ezeket az eredményeket összevetettük az IMF [2021] Financial Development indexével, mely az adott gazdaságok pénzpiaci fejlettségét hivatott mérni. Azt találtuk, hogy az eredményeink nagyrészt összhangban vannak azzal a feltételezéssel, hogy a fejlettebb pénzügypiacok esetében jobb a hozamszpredek recesszió előrjelző képessége, mivel ezen index alapján Sváj és Nagy-Britannia kiemelkedően teljesít, míg pl. az olaszok és a portugálok alacsonyabb indexet érdemeltek ki az évek során az IMF megítélése szerint. Belgium viszont a modellünk alapján jól teljesít, ennek ellenére viszonylag alacsony az FD indexe, ebből pedig arra következtethetünk, hogy a pénzpiaci fejlettségen túl egyéb tényezők is befolyásolják a hozamszpredek előrjelező képességét. 
-
-További elemzések elvégzéséhez érdemes lenne a modellbe egyéb magyarázóváltozókat is bevonni, hogy teljesebb képet kapjunk arra vonatkozóan, hogyan alakultak a múltban a pénzügyi és reál mutatók a válságokat megelőzően. Egy ilyen kép hozzásegítheti a közgazdászokat ahhoz, hogy a jövőben időben észrevegyék, ha a gazdaság egy recesszió felé tart, és magabiztosan intervenáljanak a megfelelő eszközökkel. 
-
-\pagebreak
-
-\nocite{*}
-
-```{=tex}
-\bibliography{yieldcurve}
-\bibliographystyle{agsm}
-```
-\pagebreak
-
-# Függelék: R kódok
-
-```{r ref.label=setdiff(knitr::all_labels(), c("setup")), eval=FALSE, echo=T, attr.source='.numberLines'}
-```

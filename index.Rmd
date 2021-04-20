@@ -1,0 +1,79 @@
+---
+title: "Az európai hozamgörbék recesszió előrejelző képességének empirikus vizsgálata"
+author: "Szabó Dorottya és Granát Marcell"
+output: bookdown::gitbook
+site: bookdown::bookdown_site
+favicon: "logo.ico"
+---
+
+# Absztrakt {#index}
+
+```{r setup, include=FALSE, warning=F}
+knitr::opts_chunk$set(echo = F, comment = "", warning = F, message = F, cache = T, dev = "svg", error = T, fig.align = 'center', fig.width = 7)
+```
+
+```{r packages}
+# Set up --------------------------------------------------------------------------------
+
+## Packages =============================================================================
+
+library(tidyverse)
+library(patchwork)
+library(knitr)
+library(ggthemes)
+load("C:/school/szem_8/TDK-yieldcurve/yieldcurve/dat.RData") 
+# find the cleaning process in data_cleaning.R
+
+## Gg theme =============================================================================
+
+update_geom_defaults("point", list(fill = "#595959", 
+                                   shape = 21, 
+                                   color = "black", 
+                                   size = 1.4))
+update_geom_defaults("line",
+                     list(color = "#E3120B", size = .9))
+
+update_geom_defaults("smooth", list(color = "red4", size = .9))
+
+update_geom_defaults("density",
+                     list(color = "#B6B6B6", fill =  "#B6B6B6",
+                          alpha = .3, size = 1.4))
+
+extrafont::loadfonts(device="win")
+
+theme_set(
+  theme_economist_white(gray_bg = F) + theme(
+    axis.ticks.length = unit(5, "points"),
+    axis.ticks.y  = element_line(colour = "gray", size=1.1),
+    axis.ticks.length.y = unit(.3, "cm"),
+    panel.grid.major = element_blank(),
+    plot.title = element_text(margin = margin(t = 0, r = 0, b = 10, l = 0)),
+    axis.title = element_text(margin = margin(t = 10, r = 10, b = 0, l = 0)),
+    legend.position = 'bottom'
+  )
+)
+
+```
+
+***
+
+Konzulens: Neszveda Gábor
+
+***
+
+```{css, echo=FALSE}
+p {
+text-align: justify;
+}
+.author {
+  font-size: 20px;
+  text-align: center;
+  color: #4a4a4a
+} 
+.title {
+  text-align: center;
+}
+```
+
+Számos okból kifolyólag az államkötvények hozamgörbéje a recessziók pontos előrejelzőjének bizonyul az USA-ban. Tanulmányunkban empirikusan vizsgáljuk meg, hogy az európai országok esetében is megfigyelhető-e ez az összefüggés. Az elemzési eszközök körébe tartozik a Hodrick-Prescott-filter, illetve a probit modell. A szakirodalomban megtalálható modellezési eljárást kívánjuk kiterjeszteni az optimális államkötvény lejárat párosítású szpred meghatározásával, és annak vizsgálatával, hogy eredményünk robosztusságot mutat-e az európai hozamgörbékre kiterjesztve is.
+Kutatásunk fő eredményei közé tartozik, hogy az Egyesült Államok esetében legjobb előrejelzőnek a 7 és 1 éves lejáratú államkötvények hozamából számított szpred bizonyult a legjobb előrejelzőnek, amely hasonlóan jól prediktálja a gazdasági válságok megjelenését az európai országok esetében is.
